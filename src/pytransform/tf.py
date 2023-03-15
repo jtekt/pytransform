@@ -4,12 +4,20 @@ import quaternion
 
 class Transform():
     name: str
-    _position: np.ndarray
-    _rotation: quaternion.quaternion
-    _scale: np.ndarray
+    parent = None  # Transform
+    child = None  # Transform
 
-    def __init__(self) -> None:
+    __position: np.ndarray
+    __rotation: quaternion.quaternion
+    __scale: np.ndarray
+
+    def __init__(
+        self,
+        position=np.array([0, 0, 0]),
+        rotation=np.quaternion(1, 0, 0, 0),
+        scale=np.eye(3)
+    ) -> None:
         self.name = ""
-        self._position = np.array([0, 0, 0])
-        self._rotation = np.quaternion(1, 0, 0, 0)
-        self._scale = np.eye(3)
+        self.__position = position
+        self.__rotation = rotation
+        self.__scale = scale

@@ -24,9 +24,9 @@ class Transform():
         name=""
     ) -> None:
         self.name = name
-        self.__position = position
-        self.__rotation = rotation
-        self.__scale = scale
+        self.__position = np.copy(position)
+        self.__rotation = np.copy(rotation)
+        self.__scale = np.copy(scale)
         self.children = []
 
     @property
@@ -45,3 +45,8 @@ class Transform():
         self.__position += move
         for child in self.children:
             child.translate(move)
+
+    def rotate(self, rot: quaternion.quaternion):
+        self.__rotation = rot * self.__rotation
+        for child in self.children:
+            child.rotate(rot)

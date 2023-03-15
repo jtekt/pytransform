@@ -1,0 +1,30 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = ["setuptools", "setuptools-scm"]
+
+[project]
+authors = [{name = "KUBOTA Naoki", email = "naoki_kubota@jtekt.co.jp"}]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  " Operating System :: OS Independent",
+]
+description = "Package to control transform of 3D Objects"
+name = "pytransform"
+readme = "README.md"
+requires-python = ">=3.8"
+
+dependencies = [
+  "scipy",
+  "numpy",
+]
+
+dynamic = ["version"]
+
+[project.optional-dependencies]
+plot = ["matplotlib"]
+
+[tool.setuptools.packages.find]
+exclude = ["build", "tests"]
+where = ["src"]
+[tool.setuptools.dynamic]
+version = {attr = "pytransform._version.__version__"}

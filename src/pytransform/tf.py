@@ -21,3 +21,18 @@ class Transform():
         self.__position = position
         self.__rotation = rotation
         self.__scale = scale
+
+    @property
+    def position(self):
+        return self.__position
+
+    @property
+    def rotation(self):
+        return self.__rotation
+
+    @property
+    def scale(self):
+        return self.__scale
+
+    def translate(self):
+        pass

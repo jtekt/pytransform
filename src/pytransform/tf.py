@@ -40,10 +40,10 @@ class Transform():
 
     @property
     def local_position(self):
-        if self.parent is None:
+        if self.__parent is None:
             return self.__position
         else:
-            return self.__position - self.parent.__position
+            return self.__position - self.__parent.__position
 
     @property
     def rotation(self):
@@ -51,10 +51,10 @@ class Transform():
 
     @property
     def local_rotation(self):
-        if self.parent is None:
+        if self.__parent is None:
             return self.rotation
         else:
-            return inverse_q(self.parent.__rotation)*self.__rotation
+            return inverse_q(self.__parent.__rotation)*self.__rotation
 
     @property
     def scale(self):
@@ -70,14 +70,14 @@ class Transform():
 
         rot_mat = quaternion.as_rotation_matrix(rot)
 
-        diff = self.position - point
+        radius = self.position - point
 
-        t = rot_mat @ diff.reshape((3, 1))
+        t = rot_mat @ radius.reshape((3, 1))
 
-        self.__position += t.ravel()
+        self.__position = point + t.ravel()
 
         for child in self.children:
             child.rotate_around(rot, point)
 
     def rotate(self, rot: quaternion.quaternion):
-        self.rotate_around(rot, np.zeros(3))
+        self.rotate_around(rot, self.position)

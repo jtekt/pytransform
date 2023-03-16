@@ -30,28 +30,33 @@ def test_translate(parent_pos, child_pos, move):
 
     parent_tf.children.append(child_tf)
     parent_tf.translate(move)
-
-    assert np.array_equal(parent_tf.position, parent_pos+move)
-    assert np.array_equal(parent_tf.children[0].position, child_pos+move)
+    diff = parent_tf.position - (parent_pos+move)
+    assert np.linalg.norm(diff) < 1e-3
+    diff = parent_tf.children[0].position - (child_pos+move)
+    assert np.linalg.norm(diff) < 1e-3
 
 
 test_rotate_items = {
     'base': (
         np.quaternion(1, 0, 0, 0),  # parent
-        quaternion.from_euler_angles(1, 0, 0),  # child
-        quaternion.from_euler_angles(1, 0, 0)),  # rot
+        np.quaternion(1, 0, 0, 0),  # child rot
+        np.array([0., 0., 1.]),  # child pos
+        quaternion.from_rotation_vector(np.array((np.pi/2, 0, 0))),  # rot
+        np.array([0., -1., 0.])  # child answer
+    ),
 }
 
 
 @pytest.mark.parametrize(
-    "parent_rot,child_rot, rot",
+    "parent_rot, child_rot, child_pos, rot, child_ans",
     list(test_rotate_items.values()),
     ids=list(test_rotate_items.keys()))
 def test_rotate(
-        parent_rot, child_rot, rot):
+        parent_rot, child_rot, child_pos, rot, child_ans):
     parent_tf = Transform(
         name="root", rotation=parent_rot)
     child_tf = Transform(
+        position=child_pos,
         rotation=child_rot, name="link")
     parent_tf.children.append(child_tf)
 
@@ -59,3 +64,14 @@ def test_rotate(
 
     assert parent_tf.rotation == rot*parent_rot
     assert parent_tf.children[0].rotation == rot*child_rot
+
+    diff = child_tf.position - child_ans
+    print(child_tf.position)
+    assert np.linalg.norm(diff) < 1e-3
+
+    # property accesses
+    child_tf.position
+    child_tf.rotation
+    child_tf.scale
+    child_tf.local_position
+    child_tf.local_rotation

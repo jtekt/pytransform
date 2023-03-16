@@ -9,6 +9,8 @@ pytransform = {editable = true, path = "."}
 [dev-packages]
 autopep8 = "*"
 pytest-cov = "*"
+ipykernel = "*"
+matplotlib = "*"
 
 [requires]
 python_version = "3.8"

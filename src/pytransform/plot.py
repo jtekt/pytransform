@@ -1,8 +1,28 @@
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 import quaternion
 
 from .tf import Transform
+
+
+def arm_colors(palette: str):
+    cmap = mpl.colormaps[palette]
+    # https://matplotlib.org/stable/tutorials/colors/colormaps.html#qualitative
+    # recorder for r-g-b order
+    cdict = {
+        'Pastel1': (0, 2, 1),
+        'Pastel2': (1, 0, 2),
+        'Dark2': (1, 0, 2),
+        'Set1': (0, 2, 1),
+        'Set2': (1, 0, 2)
+    }
+
+    if palette in cdict:
+        i = cdict[palette]
+        return (cmap(i[0]), cmap(i[1]), cmap(i[2]))
+
+    return (cmap(0), cmap(1), cmap(2))
 
 
 def corners(center=(0, 0, 0), size=(1, 1, 1), ax: plt.Axes = None):
@@ -23,7 +43,11 @@ def corners(center=(0, 0, 0), size=(1, 1, 1), ax: plt.Axes = None):
     ax.scatter3D(cube[:, 0], cube[:, 1], cube[:, 2])
 
 
-def coordinates(tf: Transform, ax: plt.Axes = None, arm_scale: float = 1.0):
+def coordinates(
+        tf: Transform,
+        ax: plt.Axes = None,
+        scale: float = 1.0,
+        colors: list = arm_colors('Set2')):
     if ax is None:
         ax = plt.gca()
 
@@ -36,9 +60,9 @@ def coordinates(tf: Transform, ax: plt.Axes = None, arm_scale: float = 1.0):
     unit_y = np.array([0, 1, 0]).reshape((3, 1))
     unit_z = np.array([0, 0, 1]).reshape((3, 1))
 
-    for u, c in zip([unit_x, unit_y, unit_z], ['#ff0000', '#00ff00', '#0000ff']):
+    for u, c in zip([unit_x, unit_y, unit_z], colors):
 
-        v = rot_mat @ (arm_scale * u)
+        v = rot_mat @ (scale * u)
         p = tf.position + v.ravel()
         ax.plot(
             [tf.position[0], p[0]],
@@ -48,13 +72,15 @@ def coordinates(tf: Transform, ax: plt.Axes = None, arm_scale: float = 1.0):
         )
 
 
-def coordinates_all(tf: Transform, ax: plt.Axes = None, arm_scale: float = 1.0):
+def coordinates_all(
+        tf: Transform, ax: plt.Axes = None, scale: float = 1.0,
+        colors: list = arm_colors('Set2')):
     if ax is None:
         ax = plt.gca()
-    coordinates(tf, ax=ax, arm_scale=arm_scale)
+    coordinates(tf, ax, scale, colors)
 
     for child in tf.children:
-        coordinates_all(child, ax=ax, arm_scale=arm_scale)
+        coordinates_all(child, ax, scale, colors)
         # link
         ax.plot(
             [tf.position[0], child.position[0]],

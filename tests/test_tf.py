@@ -21,6 +21,22 @@ def test_transform():
     my_tf.position
     my_tf.rotation
     my_tf.scale
+    my_tf.local_position
+    my_tf.local_rotation
+
+
+def test_id():
+    p = np.array([0, 1, 1])
+    r = quaternion.from_vector_part([1, 0, 0])
+
+    print(f'src: {id(p)}, {id(r)}')
+
+    t = Transform(p, r)
+
+    print(f'tf: {id(t.position)}, {id(t.rotation)}')
+
+    assert id(p) != id(t.position)
+    assert id(r) != id(t.rotation)
 
 
 test_translate_items = {

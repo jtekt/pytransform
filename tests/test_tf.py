@@ -100,3 +100,17 @@ def test_rotate(
     child_tf.scale
     child_tf.local_position
     child_tf.local_rotation
+
+
+def test_localpos():
+    mytf = Transform(position=np.array([1., 1., 0.0]))
+    mytf.rotate(quaternion.from_rotation_vector([0, 0, -np.pi/4]))
+    child_tf = Transform(
+        position=np.array((2.0, 1.0, 0.0))
+    )
+    child_tf.set_parent(mytf)
+
+    ans = np.array([1/np.sqrt(2), 1/np.sqrt(2), 0])
+
+    error = ans - child_tf.local_position
+    assert np.linalg.norm(error) < 1e-6

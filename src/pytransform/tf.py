@@ -23,7 +23,7 @@ class Transform():
     def __init__(
         self,
         position=np.array([0.0, 0.0, 0.0]),
-        rotation=np.quaternion(1.0, 0., 0., 0.),
+        rotation=quaternion.one,
         scale=np.eye(3),
         name=""
     ) -> None:
@@ -94,3 +94,9 @@ class Transform():
 
     def rotate(self, rot: quaternion.quaternion):
         self.rotate_around(rot, self.position)
+
+    def transform_direction(self, direction: np.ndarray):
+        # transform a direction from local-space to world-space
+        d = quaternion.as_rotation_matrix(
+            self.rotation) @ direction.reshape((3, 1))
+        return d.ravel()

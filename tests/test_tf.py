@@ -114,3 +114,8 @@ def test_localpos():
 
     error = ans - child_tf.local_position
     assert np.linalg.norm(error) < 1e-6
+
+    d = mytf.transform_direction(child_tf.local_position)
+    print(f'd: {d}')
+    err2 = d - (child_tf.position - mytf.position)
+    assert np.linalg.norm(err2) < 1e-6

@@ -47,7 +47,9 @@ def coordinates(
         tf: Transform,
         ax: plt.Axes = None,
         scale: float = 1.0,
-        colors: list = arm_colors('Set2')):
+        colors: list = arm_colors('Set2'),
+        show_name: bool = True,
+        name_label_offset=np.array([0, 0, 1])):
     if ax is None:
         ax = plt.gca()
 
@@ -60,7 +62,8 @@ def coordinates(
     unit_y = np.array([0, 1, 0]).reshape((3, 1))
     unit_z = np.array([0, 0, 1]).reshape((3, 1))
 
-    for u, c in zip([unit_x, unit_y, unit_z], colors):
+    units = [unit_x, unit_y, unit_z]
+    for u, c in zip(units, colors):
 
         v = rot_mat @ (scale * u)
         p = tf.position + v.ravel()
@@ -70,6 +73,10 @@ def coordinates(
             [tf.position[2], p[2]],
             color=c
         )
+    if show_name and (len(tf.name) > 0):
+        label_pos = tf.position+name_label_offset
+        ax.text(label_pos[0], label_pos[1], label_pos[2],
+                tf.name)
 
 
 def coordinates_all(

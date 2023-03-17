@@ -25,7 +25,7 @@ def arm_colors(palette: str):
     return (cmap(0), cmap(1), cmap(2))
 
 
-def corners(center=(0, 0, 0), size=(1, 1, 1), ax: plt.Axes = None):
+def corners(center=(0, 0, 0), size=(1, 1, 1), ax: plt.Axes = None, color=(0.1, 0.1, 0.1, 0.1)):
     if ax is None:
         ax = plt.gca()
 
@@ -40,7 +40,7 @@ def corners(center=(0, 0, 0), size=(1, 1, 1), ax: plt.Axes = None):
                 p = [x+i*w_x, y+j*w_y, z+k*w_z]
                 cube.append(p)
     cube = np.array(cube)
-    ax.scatter3D(cube[:, 0], cube[:, 1], cube[:, 2])
+    ax.scatter3D(cube[:, 0], cube[:, 1], cube[:, 2], color=color)
 
 
 def coordinates(

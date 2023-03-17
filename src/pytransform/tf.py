@@ -14,7 +14,7 @@ def inverse_q(q: quaternion.quaternion):
 class Transform():
     name: str
     __parent: Self = None  # Transform
-    children: List[Self] = []
+    __children: List[Self] = []
 
     __position: np.ndarray
     __rotation: quaternion.quaternion
@@ -29,9 +29,11 @@ class Transform():
     ) -> None:
         self.name = name
         self.__position = np.copy(position)
-        self.__rotation = np.copy(rotation)
+        # copy
+        r = quaternion.as_float_array(rotation)
+        self.__rotation = quaternion.from_float_array(r)
         self.__scale = np.copy(scale)
-        self.children = []
+        self.__children = []
         self.__parent = None
 
     @property
@@ -41,9 +43,12 @@ class Transform():
     @property
     def local_position(self):
         if self.__parent is None:
-            return self.__position
-        else:
-            return self.__position - self.__parent.__position
+            return self.position
+        diff_rot = inverse_q(self.__parent.rotation)*self.rotation
+        diff_pos = self.position - self.__parent.position  # absolute
+        p = quaternion.as_rotation_matrix(diff_rot)@diff_pos.reshape((3, 1))
+        print(p.shape)
+        return p.ravel()
 
     @property
     def rotation(self):
@@ -60,9 +65,17 @@ class Transform():
     def scale(self):
         return self.__scale
 
+    @property
+    def children(self):
+        return self.__children
+
+    def set_parent(self, parent: Self):
+        self.__parent = parent
+        parent.__children.append(self)
+
     def translate(self, move: np.ndarray):
         self.__position += move
-        for child in self.children:
+        for child in self.__children:
             child.translate(move)
 
     def rotate_around(self, rot: quaternion.quaternion, point: np.ndarray):
@@ -76,7 +89,7 @@ class Transform():
 
         self.__position = point + t.ravel()
 
-        for child in self.children:
+        for child in self.__children:
             child.rotate_around(rot, point)
 
     def rotate(self, rot: quaternion.quaternion):

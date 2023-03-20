@@ -6,12 +6,10 @@ import numpy as np
 import quaternion
 from anytree import Node, RenderTree
 
+from . import quaternion_utils as quat
+
 # https://www.python.jp/news/wnpython311/typing2.html
 Self = TypeVar("Self", bound="Transform")
-
-
-def inverse_q(q: quaternion.quaternion):
-    return np.quaternion(q.w, -q.x, -q.y, -q.z)
 
 
 class Transform():
@@ -50,7 +48,7 @@ class Transform():
     def local_position(self):
         if self.__parent is None:
             return self.position
-        diff_rot = inverse_q(self.__parent.rotation)*self.rotation
+        diff_rot = quat.inverse(self.__parent.rotation)*self.rotation
         diff_pos = self.position - self.__parent.position  # absolute
         p = quaternion.as_rotation_matrix(diff_rot)@diff_pos.reshape((3, 1))
         print(p.shape)
@@ -65,7 +63,7 @@ class Transform():
         if self.__parent is None:
             return self.rotation
         else:
-            return inverse_q(self.__parent.__rotation)*self.__rotation
+            return quat.inverse(self.__parent.__rotation)*self.__rotation
 
     @property
     def scale(self):

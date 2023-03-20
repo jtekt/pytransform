@@ -2,12 +2,13 @@ import numpy as np
 import pytest
 import quaternion
 
-from pytransform.tf import Transform, inverse_q
+from pytransform import quaternion_utils as quat
+from pytransform.tf import Transform
 
 
 def test_inverse():
     q1 = quaternion.from_rotation_vector([2.0, 6.0, 5.0])
-    iq = inverse_q(q1)
+    iq = quat.inverse(q1)
     i = iq*q1
     a = quaternion.as_float_array(i)
     error = a-np.array([1.0, 0.0, 0.0, 0.0])

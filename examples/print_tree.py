@@ -33,8 +33,20 @@ def main():
     )
 
     child_tf2.set_parent(mytf)
+    child_tf3 = Transform(
+        position=np.array((0.0, 3.0, 0.0)),
+        name='child2'
+    )
+    child_tf3.set_parent(mytf)
 
-    print("\n\r".join(mytf.tree()))
+    gchild_tf = Transform(
+        position=np.array((0.0, 3.0, 0.0)),
+        name='grandchild'
+    )
+
+    gchild_tf.set_parent(child_tf)
+
+    print(mytf.tree())
 
     # print(j.origin.tree())
 

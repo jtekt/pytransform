@@ -102,25 +102,29 @@ class Transform():
             self.rotation) @ direction.reshape((3, 1))
         return d.ravel()
 
-    def tree(self, depth: int = 0, l: list[str] = []):
+    def tree(self):
+        return "\n\r".join(self.__tree())
+
+    def __tree(self, depth: int = 0, l: list[str] = []):
         print(f'{depth}-{self.name}-{len(l)}')
 
         if depth == 0:
             h = '*'
             indent = ' '*(2*depth)
             l.append(f'{indent}{h}──{self.name}')
+            # #base indent=3 (*..)
         # print(f'**{indent}{h}──{self.name}')
         for i, c in enumerate(self.children):
-            indent1 = ' '*(1+2*depth)
-            indent2 = '  '
+            indent1 = ' '*3
+            indent2 = ''
             if depth >= 1:
-                indent2 = '│  '
+                indent2 = '│' + ' '*(depth+2*depth)
             # indent = ' '*(3+2*depth)
             h = '├'
             if i == len(self.children)-1:
                 h = '└'
             l.append(f'{indent1}{indent2}{h}──{c.name}')
             if len(c.children) > 0:
-                c.tree(depth+1, l)
+                c.__tree(depth+1, l)
             # print(f'{i}-{len(l)}')
         return l

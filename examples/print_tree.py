@@ -11,42 +11,38 @@ from pytransform.tf import Transform
 
 def main():
 
-    mytf = Transform(
+    root_tf = Transform(
         position=np.array([0.0, 1.0, 0.0]),
-        name='parent')
+        name='root')
 
-    child_tf = Transform(
+    namihei = Transform(
         position=np.array((0.0, 3.0, 0.0)),
-        name='child'
+        name='namihei'
     )
-
-    child_tf2 = Transform(
+    namihei.set_parent(root_tf)
+    umihei = Transform(
         position=np.array((0.0, 3.0, 0.0)),
-        name='child2'
+        name='umihei'
     )
+    umihei.set_parent(root_tf)
 
+    sazae = Transform(name='sazae')
+    fune = Transform(name='fune')
     j = RevolveJoint(
-        parent=mytf, child=child_tf,
-        origin=Transform(mytf.position, name='hinge'),
-        axis=np.array([0, 0, 1]),
-        limit=(1, -1)
+        parent=namihei, child=sazae,
+        origin=fune
     )
 
-    child_tf2.set_parent(mytf)
-    child_tf3 = Transform(
-        position=np.array((0.0, 3.0, 0.0)),
-        name='child2'
-    )
-    child_tf3.set_parent(mytf)
-
-    gchild_tf = Transform(
-        position=np.array((0.0, 3.0, 0.0)),
-        name='grandchild'
+    Transform(name='katsuo').set_parent(fune)
+    Transform(name='wakame').set_parent(fune)
+    RevolveJoint(
+        parent=sazae, child=Transform(name='tara'),
+        origin=Transform(name='masuo')
     )
 
-    gchild_tf.set_parent(child_tf)
+    Transform(name='?').set_parent(umihei)
 
-    print(mytf.tree())
+    print(root_tf.tree())
 
     # print(j.origin.tree())
 

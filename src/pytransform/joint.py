@@ -41,15 +41,21 @@ class BaseJoint():
         self.limit = limit
 
         self.__position = np.zeros(0)
-        self.__type = self.Type.MISC
+        # self.__type = self.Type.MISC
 
     @property
     def position(self):
         return self.__position
 
+    def set_position(self, new: np.ndarray):
+        self.__position = new
+
     @property
     def type(self):
         return self.__type
+
+    def set_type(self, t: Type):
+        self.__type = t
 
     def drive(self):
         # please overwrite
@@ -57,11 +63,14 @@ class BaseJoint():
 
 
 class RevolveJoint(BaseJoint):
+    __type = BaseJoint.Type.REVOLVE
 
     def __init__(self, parent: Transform, child: Transform, origin: Transform, axis: np.ndarray = np.array([1, 0, 0]), limit: Limitation = Limitation(0, 0)) -> None:
         super().__init__(parent, child, origin, axis, limit)
-        self.__position = np.zeros(0)
-        self.__type = self.Type.REVOLVE
+        self.set_position(np.zeros(0))
+        self.set_type(self.Type.REVOLVE)
+
+        assert self.type
 
     def drive(self, angle: float):
 
@@ -77,7 +86,7 @@ class RevolveJoint(BaseJoint):
         # a: rotation vector in world-space
         q = quaternion.from_rotation_vector(a)
         self.child.rotate_around(q, self.origin.position)
-        self.__position = p
+        self.set_position(p)
 
 
 class PrismaticJoint(BaseJoint):
@@ -86,11 +95,11 @@ class PrismaticJoint(BaseJoint):
 
     def drive(self, move: float):
 
-        p = self.__position + move
+        p = self.position + move
         if p > self.limit.upper:
             return
         if p < self.limit.lower:
             return
         t = move * self.origin.transform_direction(self.axis)
         self.child.translate(t)
-        self.__position = p
+        self.set_position(p)

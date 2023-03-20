@@ -63,8 +63,6 @@ class BaseJoint():
 
 
 class RevolveJoint(BaseJoint):
-    __type = BaseJoint.Type.REVOLVE
-
     def __init__(self, parent: Transform, child: Transform, origin: Transform, axis: np.ndarray = np.array([1, 0, 0]), limit: Limitation = Limitation(0, 0)) -> None:
         super().__init__(parent, child, origin, axis, limit)
         self.set_position(np.zeros(0))

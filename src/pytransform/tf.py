@@ -1,8 +1,10 @@
 from __future__ import annotations
+
 from typing import List, TypeVar
 
 import numpy as np
 import quaternion
+from anytree import Node, RenderTree
 
 # https://www.python.jp/news/wnpython311/typing2.html
 Self = TypeVar("Self", bound="Transform")
@@ -21,6 +23,8 @@ class Transform():
     __rotation: quaternion.quaternion
     __scale: np.ndarray
 
+    __node: Node
+
     def __init__(
         self,
         position=np.array([0.0, 0.0, 0.0]),
@@ -36,6 +40,7 @@ class Transform():
         self.__scale = np.copy(scale)
         self.__children = []
         self.__parent = None
+        self.__node = Node(name=self.name)
 
     @property
     def position(self):
@@ -70,9 +75,14 @@ class Transform():
     def children(self):
         return self.__children
 
+    @property
+    def node(self):
+        return self.__node
+
     def set_parent(self, parent: Self):
         self.__parent = parent
         parent.__children.append(self)
+        self.__node.parent = parent.node
 
     def translate(self, move: np.ndarray):
         self.__position += move
@@ -103,28 +113,5 @@ class Transform():
         return d.ravel()
 
     def tree(self):
-        return "\n\r".join(self.__tree())
-
-    def __tree(self, depth: int = 0, l: list[str] = []):
-        print(f'{depth}-{self.name}-{len(l)}')
-
-        if depth == 0:
-            h = '*'
-            indent = ' '*(2*depth)
-            l.append(f'{indent}{h}──{self.name}')
-            # #base indent=3 (*..)
-        # print(f'**{indent}{h}──{self.name}')
-        for i, c in enumerate(self.children):
-            indent1 = ' '*3
-            indent2 = ''
-            if depth >= 1:
-                indent2 = '│' + ' '*(depth+2*depth)
-            # indent = ' '*(3+2*depth)
-            h = '├'
-            if i == len(self.children)-1:
-                h = '└'
-            l.append(f'{indent1}{indent2}{h}──{c.name}')
-            if len(c.children) > 0:
-                c.__tree(depth+1, l)
-            # print(f'{i}-{len(l)}')
-        return l
+        l = [f'{pre}{node.name}' for pre, fill, node in RenderTree(self.node)]
+        return "\n\r".join(l)

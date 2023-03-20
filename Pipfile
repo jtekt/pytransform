@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 pytransform = {editable = true, path = "."}
+anytree = "*"
 
 [dev-packages]
 autopep8 = "*"

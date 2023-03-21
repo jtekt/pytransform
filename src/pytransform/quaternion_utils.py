@@ -8,11 +8,12 @@ def inverse(q: quaternion.quaternion):
 
 def rotate_toward(fm: np.ndarray, to: np.ndarray):
 
-    product = np.cross(fm, to)
+    ff = fm/(np.linalg.norm(fm))
+    tt = to/(np.linalg.norm(to))
+
     # a*b*sin(theta)
-    p = np.linalg.norm(product)
-    s = (p)/(np.linalg.norm(fm)*np.linalg.norm(to)+1e-9)
-    angle = np.arcsin(s)
-    v = angle * (product/p)  # rotation vector
+    product = np.cross(ff, tt)
+    angle = np.arcsin(np.linalg.norm(product))
+    v = angle * (product/np.linalg.norm(product))  # rotation vector
 
     return quaternion.from_rotation_vector(v)

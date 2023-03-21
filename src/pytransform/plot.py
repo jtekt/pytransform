@@ -3,10 +3,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 import quaternion
 
+from . import joint as jnt
+from . import quaternion_utils as quat
+from .chain import Chain
 from .tf import Transform
 
 
-def arm_colors(palette: str):
+def coordinate_cmap(palette: str):
     cmap = mpl.colormaps[palette]
     # https://matplotlib.org/stable/tutorials/colors/colormaps.html#qualitative
     # recorder for r-g-b order
@@ -17,12 +20,15 @@ def arm_colors(palette: str):
         'Set1': (0, 2, 1),
         'Set2': (1, 0, 2)
     }
+    n = 8
+    idx = [i for i in range(n)]
 
     if palette in cdict:
-        i = cdict[palette]
-        return (cmap(i[0]), cmap(i[1]), cmap(i[2]))
+        idx[0] = cdict[palette][0]
+        idx[1] = cdict[palette][1]
+        idx[2] = cdict[palette][2]
 
-    return (cmap(0), cmap(1), cmap(2))
+    return [cmap(i) for i in idx]
 
 
 def corners(center=(0, 0, 0), size=(1, 1, 1), ax: plt.Axes = None, color=(0.1, 0.1, 0.1, 0.1)):
@@ -47,7 +53,7 @@ def coordinates(
         tf: Transform,
         ax: plt.Axes = None,
         scale: float = 1.0,
-        colors: list = arm_colors('Set2'),
+        colors: list = coordinate_cmap('Set2'),
         show_name: bool = True,
         name_label_offset=np.array([0, 0, 1])):
     if ax is None:
@@ -81,7 +87,7 @@ def coordinates(
 
 def coordinates_all(
         tf: Transform, ax: plt.Axes = None, scale: float = 1.0,
-        colors: list = arm_colors('Set2')):
+        colors: list = coordinate_cmap('Set2')):
     if ax is None:
         ax = plt.gca()
     coordinates(tf, ax, scale, colors)
@@ -96,3 +102,79 @@ def coordinates_all(
             color='gray',
             linestyle='dotted'
         )
+
+
+def joint(j: jnt.BaseJoint, ax: plt.Axes = None, color=(1, 0, 0)):
+    if j.type == jnt.BaseJoint.Type.REVOLVE:
+        rev_joint(j, ax, color)
+    else:
+        print(f'{j.type} cannot be visualized')
+
+
+def rev_joint(j: jnt.BaseJoint,
+              ax: plt.Axes = None,
+              color=(.5, 0, 0),
+              resolution: int = 16):
+    if ax is None:
+        ax = plt.gca()
+
+    # origin
+    ax.scatter(j.origin.position[0], j.origin.position[1],
+               j.origin.position[2], color=color)
+
+    # rotation axis
+    # rotation axis in world space
+    rot_axis = j.origin.transform_direction(j.axis)
+    start = j.origin.position - rot_axis
+    end = j.origin.position + rot_axis
+    ax.plot(
+        [start[0], end[0]],
+        [start[1], end[1]],
+        [start[2], end[2]],
+        color=color
+        # linestyle='dotted'
+    )
+
+    # ring
+    q = quat.rotate_toward(np.array([0, 0, 1]), rot_axis)
+    pp = ring_point(resolution=resolution)
+
+    pr = [(quaternion.as_rotation_matrix(q)@p).ravel() for p in pp]
+    pr = np.array(pr)+j.origin.position
+
+    ax.plot(
+        pr[:, 0],
+        pr[:, 1],
+        pr[:, 2],
+        color=color
+        # linestyle='dotted'
+    )
+
+    # b = np.array(j.axis[:-1])
+
+
+def chain(ch: Chain, ax: plt.Axes = None,
+          cmap=coordinate_cmap('Dark2')):
+    if ax is None:
+        ax = plt.gca()
+
+    for link in ch.links:
+        coordinates(link, ax=ax, colors=cmap)
+        for child in link.children:
+            # link
+            ax.plot(
+                [link.position[0], child.position[0]],
+                [link.position[1], child.position[1]],
+                [link.position[2], child.position[2]],
+                color='gray',
+                linestyle='dotted'
+            )
+    for j in ch.joints:
+        joint(j, ax, color=cmap[3])
+
+
+def ring_point(r: float = 1, resolution: int = 16):
+    p = [r*np.array([np.cos(angle), np.sin(angle), 0])
+         for angle in np.linspace(0, 2*np.pi, num=resolution, endpoint=False)]
+
+    return np.array(p)

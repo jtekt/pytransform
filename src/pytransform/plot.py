@@ -55,6 +55,7 @@ def coordinates(
         scale: float = 1.0,
         colors: list = coordinate_cmap('Set2'),
         show_name: bool = True,
+        linewidth: float = 1.0,
         name_label_offset=np.array([0, 0, 1])):
     if ax is None:
         ax = plt.gca()
@@ -77,7 +78,8 @@ def coordinates(
             [tf.position[0], p[0]],
             [tf.position[1], p[1]],
             [tf.position[2], p[2]],
-            color=c
+            color=c,
+            linewidth=linewidth
         )
     if show_name and (len(tf.name) > 0):
         label_pos = tf.position+name_label_offset

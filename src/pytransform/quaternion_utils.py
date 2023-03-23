@@ -13,7 +13,10 @@ def rotate_toward(fm: np.ndarray, to: np.ndarray):
 
     # a*b*sin(theta)
     product = np.cross(ff, tt)
-    angle = np.arcsin(np.linalg.norm(product))
+
+    angle = np.arcsin(
+        np.clip(np.linalg.norm(product), -1.0, 1.0)
+    )
     v = angle * (product/(np.linalg.norm(product)+1e-12))  # rotation vector
 
     return quaternion.from_rotation_vector(v)

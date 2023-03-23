@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import time
 from argparse import ArgumentParser
 
 import matplotlib.pyplot as plt
@@ -73,12 +74,14 @@ def manipulator(target_position: np.ndarray):
     )
 
     # target_position = np.array([1,1,1])
-
+    bt = time.time()
     ik_result = robot_arm.ik_solve(
         [robot_arm.links[-1]],
         [target_position]
     )
-    print(f'ik result: {ik_result}')
+    ft = time.time()
+    print(f'complete ik in {(ft-bt)*1000:0.3f} msec')
+    print(f'ik result: \n{ik_result}')
     robot_arm.fk(ik_result.x)
     # j_yaw.drive(angles[0])
     # j_pitch1.drive(angles[1])

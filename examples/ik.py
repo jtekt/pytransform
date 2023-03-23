@@ -14,12 +14,14 @@ from pytransform.joint import Limitation, RevolveJoint
 from pytransform.tf import Transform
 
 
-def manipulator(target_position: np.ndarray):
+def manipulator(target_position: np.ndarray, is_save: bool = False):
 
+    # origin
     base_link = Transform(
         position=np.array([0.0, 0.0, 0.0]),
         name='base_link')
 
+    # define manipulator structure
     arm_base = Transform(
         position=np.array((0.0, 0.0, 0.0)),
         name='arm_base'
@@ -73,6 +75,8 @@ def manipulator(target_position: np.ndarray):
         joints=[j_yaw, j_pitch1, j_pitch2]
     )
 
+    # end of definition of the manipulator
+
     # target_position = np.array([1,1,1])
     bt = time.time()
     ik_result = robot_arm.ik_solve(
@@ -89,7 +93,8 @@ def manipulator(target_position: np.ndarray):
 
     print(f'manipulator structure: \n\r{robot_arm.links[0].tree()}')
 
-    fig = plt.figure()
+    # visualize
+    fig = plt.figure(figsize=(800/72, 800/72))
     ax: plt.Axes = fig.add_subplot(projection='3d')
     ax.set_aspect('equal')
     pytf.plot.corners(size=(8, 8, 8), center=(0, 0, 4), ax=ax)
@@ -104,19 +109,27 @@ def manipulator(target_position: np.ndarray):
         target_position[0], target_position[1], target_position[2],
         s=80)
     ax.view_init(elev=45, azim=45)
-    plt.show()
+    ax.set_proj_type('ortho')
+
+    if is_save:
+        image_name = 'ik_result.png'
+        plt.savefig(image_name)
+        print(f'write {image_name}')
+    else:
+        plt.show()
 
 
 def main():
     parser = ArgumentParser()
 
     parser.add_argument('--target', type=float, nargs=3,
-                        help='joint angles of manipulator',
+                        help='target position for end effector',
                         default=[1.5, 1.5, 4.0])
+    parser.add_argument('--save', action='store_true')
 
     args = parser.parse_args()
 
-    manipulator(np.array(args.target))
+    manipulator(np.array(args.target), args.save)
 
 
 if __name__ == '__main__':

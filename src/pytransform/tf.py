@@ -82,10 +82,14 @@ class Transform():
         parent.__children.append(self)
         self.__node.parent = parent.node
 
-    def translate(self, move: np.ndarray):
-        self.__position += move
+    def translate(self, transition: np.ndarray):
+        self.__position += transition
         for child in self.__children:
-            child.translate(move)
+            child.translate(transition)
+
+    def translate_to(self, position: np.ndarray):
+        transition = position - self.position
+        self.translate(transition)
 
     def rotate_around(self, rot: quaternion.quaternion, point: np.ndarray):
         self.__rotation = rot * self.__rotation
@@ -103,6 +107,17 @@ class Transform():
 
     def rotate(self, rot: quaternion.quaternion):
         self.rotate_around(rot, self.position)
+
+    def rotate_around_to(
+            self,
+            orientation: quaternion.quaternion,
+            point: np.ndarray):
+        q_diff = quat.inverse(self.rotation)*orientation
+        self.rotate_around(q_diff, point)
+
+    def rotate_to(self,
+                  orientation: quaternion.quaternion,):
+        self.rotate_around_to(orientation, self.position)
 
     def transform_direction(self, direction: np.ndarray):
         # transform a direction from local-space to world-space

@@ -61,11 +61,15 @@ class BaseJoint():
         # please overwrite
         assert True
 
+    def drive_to(self):
+        # please overwrite
+        assert True
+
 
 class RevolveJoint(BaseJoint):
     def __init__(self, parent: Transform, child: Transform, origin: Transform, axis: np.ndarray = np.array([1, 0, 0]), limit: Limitation = Limitation(0, 0)) -> None:
         super().__init__(parent, child, origin, axis, limit)
-        self.set_position(np.zeros(0))
+        self.set_position(np.zeros(1))
         self.set_type(self.Type.REVOLVE)
 
         assert self.type
@@ -85,6 +89,10 @@ class RevolveJoint(BaseJoint):
         q = quaternion.from_rotation_vector(a)
         self.child.rotate_around(q, self.origin.position)
         self.set_position(p)
+
+    def drive_to(self, position: float):
+        diff = position-self.position
+        self.drive(diff[0])
 
 
 class PrismaticJoint(BaseJoint):

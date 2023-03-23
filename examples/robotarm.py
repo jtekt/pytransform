@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+from argparse import ArgumentParser
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -5,12 +8,12 @@ import quaternion
 from mpl_toolkits.mplot3d.axes3d import Axes3D
 
 import pytransform as pytf
-from pytransform.joint import RevolveJoint, Limitation
-from pytransform.tf import Transform
 from pytransform.chain import Chain
+from pytransform.joint import Limitation, RevolveJoint
+from pytransform.tf import Transform
 
 
-def main():
+def manipulator(angles: list[float]):
 
     base_link = Transform(
         position=np.array([0.0, 0.0, 0.0]),
@@ -69,11 +72,17 @@ def main():
         joints=[j_yaw, j_pitch1, j_pitch2]
     )
 
-    j_yaw.drive(np.pi/3)
-    j_pitch1.drive(np.pi/3)
-    j_pitch2.drive(np.pi/3)
+    # for i, j in enumerate(robot_arm.joints):
+    #     print(f'{i}: {j.position}')
 
-    print(robot_arm.links[0].tree())
+    # for angle, j in zip(angles, robot_arm.joints):
+    #     j.drive_to(angle)
+    robot_arm.fk(angles)
+    # j_yaw.drive(angles[0])
+    # j_pitch1.drive(angles[1])
+    # j_pitch2.drive(angles[2])
+
+    print(f'manipulator structure: \n\r{robot_arm.links[0].tree()}')
 
     fig = plt.figure()
     ax: plt.Axes = fig.add_subplot(projection='3d')
@@ -87,6 +96,17 @@ def main():
     pytf.plot.chain(robot_arm)
     ax.view_init(elev=45, azim=45)
     plt.show()
+
+
+def main():
+    parser = ArgumentParser()
+
+    parser.add_argument('--angles', type=float, nargs=3,
+                        help='joint angles of manipulator', default=[0.0, 0.0, 0.0])
+
+    args = parser.parse_args()
+
+    manipulator(args.angles)
 
 
 if __name__ == '__main__':

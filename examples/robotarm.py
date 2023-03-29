@@ -12,8 +12,10 @@ from pytransform.chain import Chain
 from pytransform.joint import Limitation, RevolveJoint
 from pytransform.tf import Transform
 
+plt.rcParams['font.size'] = 24
 
-def manipulator(angles: list[float]):
+
+def manipulator(angles: list[float], is_save: bool = False):
 
     base_link = Transform(
         position=np.array([0.0, 0.0, 0.0]),
@@ -84,10 +86,10 @@ def manipulator(angles: list[float]):
 
     print(f'manipulator structure: \n\r{robot_arm.links[0].tree()}')
 
-    fig = plt.figure()
+    fig = plt.figure(figsize=(600/72, 600/72))
     ax: plt.Axes = fig.add_subplot(projection='3d')
     ax.set_aspect('equal')
-    pytf.plot.corners(size=(8, 8, 8), center=(0, 0, 4), ax=ax)
+    pytf.plot.corners(size=(5, 5, 5), center=(0, 0, 2.5), ax=ax)
 
     ax.set_xlabel('x')
     ax.set_ylabel('y')
@@ -95,7 +97,14 @@ def manipulator(angles: list[float]):
 
     pytf.plot.chain(robot_arm)
     ax.view_init(elev=45, azim=45)
-    plt.show()
+    ax.set_proj_type('ortho')
+
+    if is_save:
+        image_name = 'robotarm.png'
+        plt.savefig(image_name)
+        print(f'write {image_name}')
+    else:
+        plt.show()
 
 
 def main():
@@ -103,10 +112,12 @@ def main():
 
     parser.add_argument('--angles', type=float, nargs=3,
                         help='joint angles of manipulator', default=[0.0, 0.0, 0.0])
+    parser.add_argument('--save', action='store_true',
+                        help='save image')
 
     args = parser.parse_args()
 
-    manipulator(args.angles)
+    manipulator(args.angles, args.save)
 
 
 if __name__ == '__main__':

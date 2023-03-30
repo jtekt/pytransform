@@ -17,6 +17,7 @@ class Limitation(NamedTuple):
 class BaseJoint():
     class Type(Enum):
         MISC = auto()
+        FIXED = auto()
         REVOLVE = auto()
         PRISMATIC = auto()
 
@@ -64,6 +65,17 @@ class BaseJoint():
     def drive_to(self):
         # please overwrite
         assert True
+
+
+class FixedJoint(BaseJoint):
+    def __init__(self, parent: Transform, child: Transform, origin: Transform, axis: np.ndarray = np.array([1, 0, 0]), limit: Limitation = Limitation(0, 0)) -> None:
+        super().__init__(parent, child, origin, axis, limit)
+        self.set_position(np.zeros(0))
+        self.set_type(self.Type.FIXED)
+
+    def drive(self, val: float):
+        # do nothing
+        return
 
 
 class RevolveJoint(BaseJoint):

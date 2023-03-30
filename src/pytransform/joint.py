@@ -19,6 +19,7 @@ class BaseJoint():
         MISC = auto()
         FIXED = auto()
         REVOLVE = auto()
+        CONTINUOUS = auto()
         PRISMATIC = auto()
 
     __position: np.ndarray
@@ -95,6 +96,29 @@ class RevolveJoint(BaseJoint):
         if p < self.limit.lower:
             return
 
+        v = angle*self.axis
+        a = self.origin.transform_direction(v)
+        # a: rotation vector in world-space
+        q = quaternion.from_rotation_vector(a)
+        self.child.rotate_around(q, self.origin.position)
+        self.set_position(p)
+
+    def drive_to(self, position: float):
+        diff = position-self.position
+        self.drive(diff[0])
+
+
+class ContinuousJoint(BaseJoint):
+    def __init__(self, parent: Transform, child: Transform, origin: Transform, axis: np.ndarray = np.array([1, 0, 0]), limit: Limitation = Limitation(0, 0)) -> None:
+        super().__init__(parent, child, origin, axis, limit)
+        self.set_position(np.zeros(1))
+        self.set_type(self.Type.CONTINUOUS)
+
+        assert self.type
+
+    def drive(self, angle: float):
+
+        p = self.position + angle
         v = angle*self.axis
         a = self.origin.transform_direction(v)
         # a: rotation vector in world-space

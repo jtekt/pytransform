@@ -145,3 +145,7 @@ class PrismaticJoint(BaseJoint):
         t = move * self.origin.transform_direction(self.axis)
         self.child.translate(t)
         self.set_position(p)
+
+    def drive_to(self, position: float):
+        diff = position-self.position
+        self.drive(diff[0])

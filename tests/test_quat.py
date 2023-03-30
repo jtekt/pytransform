@@ -40,10 +40,11 @@ def test_toward(a, b):
     assert np.dot(a, v) < 1e-3
     assert np.dot(b, v) < 1e-3
 
-    bb = quaternion.as_rotation_matrix(q) @ a.reshape((3, 1))
+    # bb = quaternion.as_rotation_matrix(q) @ a.reshape((3, 1))
+    bb = quat.multiple(q, a)
 
-    error = np.linalg.norm(np.cross(b, bb.ravel()))
+    error = np.linalg.norm(np.cross(b, bb))
 
     print(f'b={b}')
-    print(f'bb={bb.ravel()}, {bb.shape}')
+    print(f'bb={bb}, {bb.shape}')
     assert error < 1e-3

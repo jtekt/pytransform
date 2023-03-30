@@ -2,6 +2,10 @@ import numpy as np
 import quaternion
 
 
+def identity():
+    return np.quaternion(1, 0, 0, 0)
+
+
 def inverse(q: quaternion.quaternion):
     return np.quaternion(q.w, -q.x, -q.y, -q.z)
 

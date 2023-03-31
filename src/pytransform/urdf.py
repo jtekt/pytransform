@@ -67,7 +67,7 @@ def _elm2joint(elm: ET.Element, links: list[Transform]):
 
     joint_dict = {
         'fixed': joint.FixedJoint,
-        'revolve': joint.RevolveJoint,
+        'revolute': joint.RevoluteJoint,
         'continuous': joint.ContinuousJoint,
         'prismatic': joint.PrismaticJoint
     }
@@ -78,6 +78,8 @@ def _elm2joint(elm: ET.Element, links: list[Transform]):
             origin=org,
             axis=axis
         )
+    else:
+        raise ValueError(f'{type_name} is not valid')
 
 
 def chain_from_urdf(filename: str):

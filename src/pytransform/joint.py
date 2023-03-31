@@ -18,7 +18,7 @@ class BaseJoint():
     class Type(Enum):
         MISC = auto()
         FIXED = auto()
-        REVOLVE = auto()
+        REVOLUTE = auto()
         CONTINUOUS = auto()
         PRISMATIC = auto()
 
@@ -79,11 +79,11 @@ class FixedJoint(BaseJoint):
         return
 
 
-class RevolveJoint(BaseJoint):
+class RevoluteJoint(BaseJoint):
     def __init__(self, parent: Transform, child: Transform, origin: Transform, axis: np.ndarray = np.array([1, 0, 0]), limit: Limitation = Limitation(0, 0)) -> None:
         super().__init__(parent, child, origin, axis, limit)
         self.set_position(np.zeros(1))
-        self.set_type(self.Type.REVOLVE)
+        self.set_type(self.Type.REVOLUTE)
 
         assert self.type
 
@@ -134,6 +134,10 @@ class ContinuousJoint(BaseJoint):
 class PrismaticJoint(BaseJoint):
     def __init__(self, parent: Transform, child: Transform, origin: Transform, axis: np.ndarray = np.array([1, 0, 0]), limit: Limitation = Limitation(0, 0)) -> None:
         super().__init__(parent, child, origin, axis, limit)
+        self.set_position(np.zeros(1))
+        self.set_type(self.Type.PRISMATIC)
+
+        assert self.type
 
     def drive(self, move: float):
 

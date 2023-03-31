@@ -107,7 +107,7 @@ def coordinates_all(
 
 
 def joint(j: jnt.BaseJoint, ax: plt.Axes = None, color=(1, 0, 0)):
-    if j.type == jnt.BaseJoint.Type.REVOLVE:
+    if j.type == jnt.BaseJoint.Type.REVOLUTE:
         rev_joint(j, ax, color)
     else:
         print(f'{j.type} cannot be visualized')

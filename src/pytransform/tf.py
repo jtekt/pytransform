@@ -69,6 +69,7 @@ class Transform():
     def scale(self):
         return self.__scale
 
+    # hierarchy
     @property
     def children(self):
         return self.__children
@@ -76,6 +77,18 @@ class Transform():
     @property
     def node(self):
         return self.__node
+
+    def __find_root(self):
+        t = self
+        for i in range(1000):
+            if t.node.is_root:
+                return t
+            else:
+                t = t.__parent
+
+    @property
+    def root(self):
+        return self.__find_root()
 
     def set_parent(self, parent: Self):
         self.__parent = parent

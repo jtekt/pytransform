@@ -65,14 +65,14 @@ def coordinates(
 
     rot_mat = quaternion.as_rotation_matrix(tf.rotation)
 
-    unit_x = np.array([1, 0, 0]).reshape((3, 1))
-    unit_y = np.array([0, 1, 0]).reshape((3, 1))
-    unit_z = np.array([0, 0, 1]).reshape((3, 1))
+    unit_x = np.array([scale, 0, 0]).reshape((3, 1))
+    unit_y = np.array([0, scale, 0]).reshape((3, 1))
+    unit_z = np.array([0, 0, scale]).reshape((3, 1))
 
     units = [unit_x, unit_y, unit_z]
     for u, c in zip(units, colors):
 
-        v = rot_mat @ (scale * u)
+        v = rot_mat @ u
         p = tf.position + v.ravel()
         ax.plot(
             [tf.position[0], p[0]],
@@ -88,14 +88,18 @@ def coordinates(
 
 
 def coordinates_all(
-        tf: Transform, ax: plt.Axes = None, scale: float = 1.0,
+        tf: Transform,
+        ax: plt.Axes = None,
+        scale: float = 1.0,
         colors: list = coordinate_cmap('Set2')):
     if ax is None:
         ax = plt.gca()
-    coordinates(tf, ax, scale, colors)
+    coordinates(tf, ax, scale, colors,
+                name_label_offset=np.array([0, 0, scale]))
 
     for child in tf.children:
-        coordinates_all(child, ax, scale, colors)
+        coordinates_all(child, ax, scale, colors,
+                        name_label_offset=np.array([0, 0, scale]))
         # link
         ax.plot(
             [tf.position[0], child.position[0]],
@@ -106,9 +110,13 @@ def coordinates_all(
         )
 
 
-def joint(j: jnt.BaseJoint, ax: plt.Axes = None, color=(1, 0, 0)):
+def joint(
+        j: jnt.BaseJoint,
+        ax: plt.Axes = None,
+        color=(1, 0, 0),
+        scale: float = 1.0):
     if j.type == jnt.BaseJoint.Type.REVOLUTE:
-        rev_joint(j, ax, color)
+        rev_joint(j, ax, color, scale=scale)
     else:
         print(f'{j.type} cannot be visualized')
 
@@ -116,7 +124,8 @@ def joint(j: jnt.BaseJoint, ax: plt.Axes = None, color=(1, 0, 0)):
 def rev_joint(j: jnt.BaseJoint,
               ax: plt.Axes = None,
               color=(.5, 0, 0),
-              resolution: int = 16):
+              resolution: int = 16,
+              scale: float = 1.0):
     if ax is None:
         ax = plt.gca()
 
@@ -126,7 +135,7 @@ def rev_joint(j: jnt.BaseJoint,
 
     # rotation axis
     # rotation axis in world space
-    rot_axis = j.origin.transform_direction(j.axis)
+    rot_axis = scale*j.origin.transform_direction(j.axis)
     start = j.origin.position - rot_axis
     end = j.origin.position + rot_axis
     ax.plot(
@@ -139,7 +148,7 @@ def rev_joint(j: jnt.BaseJoint,
 
     # ring
     q = quat.rotate_toward(np.array([0, 0, 1]), rot_axis)
-    pp = ring_point(resolution=resolution)
+    pp = ring_point(scale, resolution=resolution)
 
     pr = [(quaternion.as_rotation_matrix(q)@p).ravel() for p in pp]
     pr = np.array(pr)+j.origin.position
@@ -156,12 +165,13 @@ def rev_joint(j: jnt.BaseJoint,
 
 
 def chain(ch: Chain, ax: plt.Axes = None,
-          cmap=coordinate_cmap('Dark2')):
+          cmap=coordinate_cmap('Dark2'), scale: float = 1.0):
     if ax is None:
         ax = plt.gca()
 
     for link in ch.links:
-        coordinates(link, ax=ax, colors=cmap)
+        coordinates(link, ax=ax, colors=cmap, scale=scale,
+                    name_label_offset=np.array([0, 0, scale]))
         for child in link.children:
             # link
             ax.plot(
@@ -172,7 +182,7 @@ def chain(ch: Chain, ax: plt.Axes = None,
                 linestyle='dotted'
             )
     for j in ch.joints:
-        joint(j, ax, color=cmap[3])
+        joint(j, ax, color=cmap[3], scale=scale)
 
 
 def ring_point(r: float = 1, resolution: int = 16):

@@ -199,9 +199,9 @@ def prismatic_joint(j: jnt.BaseJoint,
         # linestyle='dotted'
     )
     # slide guide
-    plot_ring(scale, j.origin.position+start,
+    plot_ring(scale, start,
               slide_axis, ax, color, resolution=4)
-    plot_ring(scale, j.origin.position+end,
+    plot_ring(scale, end,
               slide_axis, ax, color, resolution=4)
 
 

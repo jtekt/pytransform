@@ -10,7 +10,7 @@ from mpl_toolkits.mplot3d.axes3d import Axes3D
 
 import pytransform as pytf
 from pytransform.chain import Chain
-from pytransform.joint import Limitation, RevolveJoint
+from pytransform.joint import Limitation, RevoluteJoint
 from pytransform.tf import Transform
 
 
@@ -49,21 +49,21 @@ def manipulator(target_position: np.ndarray, is_save: bool = False):
 
     end_effector.set_parent(link3)
 
-    j_yaw = RevolveJoint(
+    j_yaw = RevoluteJoint(
         parent=arm_base, child=link1,
         origin=Transform(arm_base.position, name='yaw'),
         axis=np.array([0, 0, 1]),
         limit=Limitation(2, -2)
     )
 
-    j_pitch1 = RevolveJoint(
+    j_pitch1 = RevoluteJoint(
         parent=link1, child=link2,
         origin=Transform(link2.position, name='pitch1'),
         axis=np.array([0, 1, 0]),
         limit=Limitation(3, -3)
     )
 
-    j_pitch2 = RevolveJoint(
+    j_pitch2 = RevoluteJoint(
         parent=link2, child=link3,
         origin=Transform(link3.position, name='pitch2'),
         axis=np.array([0, 1, 0]),

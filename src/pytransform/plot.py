@@ -115,17 +115,36 @@ def joint(
         ax: plt.Axes = None,
         color=(1, 0, 0),
         scale: float = 1.0):
-    if j.type == jnt.BaseJoint.Type.REVOLUTE:
+
+    if j.type == jnt.BaseJoint.Type.FIXED:
+        fixed_joint(j, ax, color, scale)
+    elif j.type == jnt.BaseJoint.Type.REVOLUTE:
         rev_joint(j, ax, color, scale=scale)
+    elif j.type == jnt.BaseJoint.Type.CONTINUOUS:
+        rev_joint(j, ax, color, scale=scale, num_rings=2)
+    elif j.type == jnt.BaseJoint.Type.PRISMATIC:
+        prismatic_joint(j, ax, color, scale)
     else:
         print(f'{j.type} cannot be visualized')
+
+
+def fixed_joint(j: jnt.BaseJoint,
+                ax: plt.Axes = None,
+                color=(.5, 0, 0),
+                scale: float = 1.0):
+    if ax is None:
+        ax = plt.gca()
+    ax.scatter(j.origin.position[0], j.origin.position[1],
+               j.origin.position[2], color=color,
+               marker='d')
 
 
 def rev_joint(j: jnt.BaseJoint,
               ax: plt.Axes = None,
               color=(.5, 0, 0),
+              scale: float = 1.0,
               resolution: int = 16,
-              scale: float = 1.0):
+              num_rings: int = 1):
     if ax is None:
         ax = plt.gca()
 
@@ -148,20 +167,63 @@ def rev_joint(j: jnt.BaseJoint,
 
     # ring
     q = quat.rotate_toward(np.array([0, 0, 1]), rot_axis)
-    pp = ring_point(scale, resolution=resolution)
 
-    pr = [(quaternion.as_rotation_matrix(q)@p).ravel() for p in pp]
-    pr = np.array(pr)+j.origin.position
+    for s in range(num_rings):
 
+        pp = ring_point((s+1/num_rings)*scale, resolution=resolution)
+
+        pr = [(quaternion.as_rotation_matrix(q)@p).ravel() for p in pp]
+        pr = np.array(pr)+j.origin.position
+
+        ax.plot(
+            pr[:, 0],
+            pr[:, 1],
+            pr[:, 2],
+            color=color
+            # linestyle='dotted'
+        )
+
+    # b = np.array(j.axis[:-1])
+
+
+def prismatic_joint(j: jnt.BaseJoint,
+                    ax: plt.Axes = None,
+                    color=(.5, 0, 0),
+                    scale: float = 1.0):
+    if ax is None:
+        ax = plt.gca()
+
+    # origin
+    ax.scatter(j.origin.position[0], j.origin.position[1],
+               j.origin.position[2], color=color)
+
+    # axis
+    slide_axis = scale*j.origin.transform_direction(j.axis)
+    start = j.origin.position - slide_axis
+    end = j.origin.position + slide_axis
     ax.plot(
-        pr[:, 0],
-        pr[:, 1],
-        pr[:, 2],
+        [start[0], end[0]],
+        [start[1], end[1]],
+        [start[2], end[2]],
         color=color
         # linestyle='dotted'
     )
+    # slide guide
+    q = quat.rotate_toward(np.array([0, 0, 1]), slide_axis)
+    pp = ring_point(scale, resolution=4)
+    pr = [quat.multiple(q, p) for p in pp]
+    pr = np.array(pr)+j.origin.position + start
 
-    # b = np.array(j.axis[:-1])
+    ax.plot(pr[:, 0], pr[:, 1], pr[:, 2],
+            color=color
+            # linestyle='dotted'
+            )
+
+    pr = np.array(pr)+j.origin.position - end
+    ax.plot(pr[:, 0], pr[:, 1], pr[:, 2],
+            color=color
+            # linestyle='dotted'
+            )
 
 
 def chain(ch: Chain, ax: plt.Axes = None,

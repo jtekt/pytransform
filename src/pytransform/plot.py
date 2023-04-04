@@ -136,7 +136,7 @@ def fixed_joint(j: jnt.BaseJoint,
         ax = plt.gca()
     ax.scatter(j.origin.position[0], j.origin.position[1],
                j.origin.position[2], color=color,
-               marker='d')
+               marker='s')
 
 
 def rev_joint(j: jnt.BaseJoint,
@@ -149,8 +149,11 @@ def rev_joint(j: jnt.BaseJoint,
         ax = plt.gca()
 
     # origin
+    m = 'o'
+    if num_rings >= 2:
+        m = '*'
     ax.scatter(j.origin.position[0], j.origin.position[1],
-               j.origin.position[2], color=color)
+               j.origin.position[2], color=color, marker=m)
 
     # rotation axis
     # rotation axis in world space
@@ -166,22 +169,9 @@ def rev_joint(j: jnt.BaseJoint,
     )
 
     # ring
-    q = quat.rotate_toward(np.array([0, 0, 1]), rot_axis)
-
     for s in range(num_rings):
-
-        pp = ring_point((s+1/num_rings)*scale, resolution=resolution)
-
-        pr = [(quaternion.as_rotation_matrix(q)@p).ravel() for p in pp]
-        pr = np.array(pr)+j.origin.position
-
-        ax.plot(
-            pr[:, 0],
-            pr[:, 1],
-            pr[:, 2],
-            color=color
-            # linestyle='dotted'
-        )
+        plot_ring((s+1/num_rings)*scale,
+                  j.origin.position, rot_axis, ax, color)
 
     # b = np.array(j.axis[:-1])
 
@@ -195,7 +185,7 @@ def prismatic_joint(j: jnt.BaseJoint,
 
     # origin
     ax.scatter(j.origin.position[0], j.origin.position[1],
-               j.origin.position[2], color=color)
+               j.origin.position[2], color=color, marker='d')
 
     # axis
     slide_axis = scale*j.origin.transform_direction(j.axis)
@@ -209,21 +199,10 @@ def prismatic_joint(j: jnt.BaseJoint,
         # linestyle='dotted'
     )
     # slide guide
-    q = quat.rotate_toward(np.array([0, 0, 1]), slide_axis)
-    pp = ring_point(scale, resolution=4)
-    pr = [quat.multiple(q, p) for p in pp]
-    pr = np.array(pr)+j.origin.position + start
-
-    ax.plot(pr[:, 0], pr[:, 1], pr[:, 2],
-            color=color
-            # linestyle='dotted'
-            )
-
-    pr = np.array(pr)+j.origin.position - end
-    ax.plot(pr[:, 0], pr[:, 1], pr[:, 2],
-            color=color
-            # linestyle='dotted'
-            )
+    plot_ring(scale, j.origin.position+start,
+              slide_axis, ax, color, resolution=4)
+    plot_ring(scale, j.origin.position+end,
+              slide_axis, ax, color, resolution=4)
 
 
 def chain(ch: Chain, ax: plt.Axes = None,
@@ -252,3 +231,27 @@ def ring_point(r: float = 1, resolution: int = 16):
          for angle in np.linspace(0, 2*np.pi, num=resolution, endpoint=False)]
 
     return np.array(p)
+
+
+def plot_ring(radius: float = 1.0, center=np.array([0, 0, 0]),
+              axis=np.array([0, 0, 1]),
+              ax: plt.Axes = None,
+              color=(.5, 0, 0), resolution: int = 16):
+    if ax is None:
+        ax = plt.gca()
+
+    q = quat.rotate_toward(np.array([0, 0, 1]), axis)
+
+    pp = ring_point(radius, resolution=resolution)
+
+    pr = [quat.multiple(q, p) for p in pp]
+    pr.append(pr[0])
+    pr = np.array(pr)+center
+
+    ax.plot(
+        pr[:, 0],
+        pr[:, 1],
+        pr[:, 2],
+        color=color
+        # linestyle='dotted'
+    )

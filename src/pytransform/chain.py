@@ -30,6 +30,13 @@ class Chain():
     def root(self):
         return self.links[0].root
 
+    def get_link(self, name: str):
+        candidates = [l for l in self.links if l.name == name]
+        if len(candidates) == 0:
+            return None
+        else:
+            return candidates[0]
+
     def fk(self, positions: list):
         # forward kinematics
         for j, p in zip(self.joints, positions):

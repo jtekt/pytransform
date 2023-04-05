@@ -65,3 +65,16 @@ class Chain():
             loss_position_f,
             initial_x)
         return le_lsq
+
+    def bbox(self) -> tuple[np.ndarray, np.ndarray]:
+        """bbox of links
+
+        Returns:
+            tuple[np.ndarray,np.ndarray]: min, max of bbox
+        """
+        positions = np.array([l.position for l in self.links])
+
+        p_min = np.min(positions, axis=0)
+        p_max = np.max(positions, axis=0)
+
+        return p_min, p_max

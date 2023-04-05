@@ -78,6 +78,10 @@ class FixedJoint(BaseJoint):
         # do nothing
         return
 
+    def drive_to(self, val: float):
+        # do nothing
+        return
+
 
 class RevoluteJoint(BaseJoint):
     def __init__(self, parent: Transform, child: Transform, origin: Transform, axis: np.ndarray = np.array([1, 0, 0]), limit: Limitation = Limitation(0, 0)) -> None:

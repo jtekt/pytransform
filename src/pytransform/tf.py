@@ -4,7 +4,7 @@ from typing import List, TypeVar
 
 import numpy as np
 import quaternion
-from anytree import Node, RenderTree
+from anytree import ContStyle, Node, RenderTree
 
 from . import quaternion_utils as quat
 
@@ -138,6 +138,10 @@ class Transform():
             self.rotation) @ direction.reshape((3, 1))
         return d.ravel()
 
-    def tree(self):
-        l = [f'{pre}{node.name}' for pre, fill, node in RenderTree(self.node)]
+    def __default_node_format(pre: str, node: Node):
+        return f'{pre}{node.name}'
+
+    def tree(self, style=ContStyle(), formatter=__default_node_format):
+        l = [formatter(pre, node)
+             for pre, fill, node in RenderTree(self.node, style=style)]
         return "\n\r".join(l)

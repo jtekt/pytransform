@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import numpy as np
 import quaternion
+from anytree import Node
 from scipy import optimize
 
 from . import quaternion_utils as quat
@@ -21,6 +22,12 @@ class Chain():
         self.links = links
         self.joints = joints
         self.name = name
+
+        # add tag
+        for l in self.links:
+            l.node.link = True
+        for j in self.joints:
+            j.origin.node.joint = True
 
     @property
     def position(self):
@@ -84,3 +91,12 @@ class Chain():
         lowers = [j.limit.lower for j in self.joints]
         mid = [0.5*(u+l) for (u, l) in zip(uppers, lowers)]
         return mid
+
+    def tree(self):
+        def f(pre: str, node: Node):
+            prefix = ''
+            if 'joint' in node.__dict__:
+                prefix = '*'
+            return f'{pre}{prefix}{node.name}'
+
+        return self.root.tree(formatter=f)

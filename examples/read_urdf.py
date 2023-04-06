@@ -13,8 +13,8 @@ def read(filename: str, is_save: bool, scale=1.0):
     print(f'robot name: {robot.name}')
     print(f'#links: {len(robot.links)}')
     print(f'#joints: {len(robot.joints)}')
-
-    print(f'structure:\n{robot.root.tree()}')
+    print(robot.joints[0].origin.node)
+    print(f'structure:\n{robot.tree()}')
 
     # print(f'joints: {robot.joints}')
 

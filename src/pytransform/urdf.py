@@ -1,6 +1,7 @@
 # urdf parser
 from __future__ import annotations
 
+import re
 import xml.etree.ElementTree as ET
 
 import numpy as np
@@ -20,8 +21,9 @@ def _elm2link(elm: ET.Element):
     )
 
 
-def str2array(s: str, decoder=float, deliminator: str = ' '):
-    return [decoder(x) for x in s.split(deliminator)]
+def str2array(s: str, decoder=float):
+    m = re.findall(r'[-0-9.]+', s)
+    return [decoder(x) for x in m]
 
 
 def _elm2joint(elm: ET.Element, links: list[Transform]):

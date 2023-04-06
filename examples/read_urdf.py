@@ -7,7 +7,7 @@ import pytransform.plot as tfplot
 from pytransform import urdf
 
 
-def read(filename: str, is_save: bool, scale=1.0):
+def read(filename: str, is_save: bool, scale=1.0, pose='zero'):
     robot = urdf.chain_from_urdf(filename)
 
     print(f'robot name: {robot.name}')
@@ -16,12 +16,20 @@ def read(filename: str, is_save: bool, scale=1.0):
     print(robot.joints[0].origin.node)
     print(f'structure:\n{robot.tree()}')
 
+    if pose == 'mid':
+        robot.fk(robot.mid_position())
+    if pose == 'max':
+        robot.fk([j.limit.upper for j in robot.joints])
+    if pose == 'min':
+        robot.fk([j.limit.lower for j in robot.joints])
     # print(f'joints: {robot.joints}')
 
     fig = plt.figure(figsize=(600/72, 600/72))
     ax: plt.Axes = fig.add_subplot(projection='3d')
 
-    tfplot.corners(size=(1, 1, 1), center=(0, 0, 0.), ax=ax)
+    mi, ma = robot.bbox()
+    size = (ma-mi)
+    tfplot.corners(size=1.1*size, center=0.5*(mi+ma), ax=ax)
 
     ax.set_xlabel('x')
     ax.set_ylabel('y')
@@ -45,9 +53,9 @@ def main():
     parser.add_argument('filename')
     parser.add_argument('--save', action='store_true')
     parser.add_argument('--scale', type=float, default=1.0)
-
+    parser.add_argument('--pose',  default='zero')
     args = parser.parse_args()
-    read(args.filename, args.save, args.scale)
+    read(args.filename, args.save, args.scale, args.pose)
 
 
 if __name__ == '__main__':

@@ -44,7 +44,8 @@ class Chain():
 
     def ik_solve(self,
                  reference_tf: list[Transform],
-                 target_positions: list[np.ndarray]):
+                 target_positions: list[np.ndarray],
+                 initial_position: list[np.ndarray]):
 
         def loss_position_f(position: list):
             self.fk(position)
@@ -60,10 +61,9 @@ class Chain():
 
             return loss
 
-        initial_x = [0]*len(self.joints)
         le_lsq = optimize.minimize(
             loss_position_f,
-            initial_x)
+            initial_position)
         return le_lsq
 
     def bbox(self) -> tuple[np.ndarray, np.ndarray]:
@@ -78,3 +78,9 @@ class Chain():
         p_max = np.max(positions, axis=0)
 
         return p_min, p_max
+
+    def mid_position(self):
+        uppers = [j.limit.upper for j in self.joints]
+        lowers = [j.limit.lower for j in self.joints]
+        mid = [0.5*(u+l) for (u, l) in zip(uppers, lowers)]
+        return mid

@@ -49,5 +49,6 @@ def test_ik(filename: str, distal_name: str):
     print(f'end effector: {end_effector.name}')
     l = robot.ik_solve(
         [end_effector],
-        [np.array([0.1, 0.1, 0.1])]
+        [np.array([0.1, 0.1, 0.1])],
+        initial_position=robot.mid_position()
     )

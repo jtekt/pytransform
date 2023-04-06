@@ -29,6 +29,7 @@ def _elm2joint(elm: ET.Element, links: list[Transform]):
         raise ValueError(f'tag must be joint')
     name = elm.attrib['name']
     type_name = elm.attrib['type']
+    # parent--child
     parent_name = elm.find('parent').attrib['link']
     child_name = elm.find('child').attrib['link']
 
@@ -40,7 +41,7 @@ def _elm2joint(elm: ET.Element, links: list[Transform]):
         return
     parent = candidate_p[0]
     child = candidate_c[0]
-
+    # joint origin
     origin_rot = quat.identity()  # rotation offset from parent
     origin_pos = [0, 0, 0]  # offset from parent
     origin = elm.find('origin')
@@ -51,11 +52,6 @@ def _elm2joint(elm: ET.Element, links: list[Transform]):
         if 'xyz' in origin.attrib:
             origin_pos = str2array(origin.attrib['xyz'])
 
-    axis = [1, 0, 0]
-    a = elm.find('axis')
-    if a is not None:
-        axis = str2array(a.attrib['xyz'])
-
     org = Transform(
         position=parent.position+origin_pos,
         rotation=origin_rot*parent.rotation,
@@ -64,6 +60,23 @@ def _elm2joint(elm: ET.Element, links: list[Transform]):
 
     child.rotate_to(org.rotation)
     child.translate_to(org.position)
+
+    #  joint axis
+    axis = [1, 0, 0]
+    a_item = elm.find('axis')
+    if a_item is not None:
+        axis = str2array(a_item.attrib['xyz'])
+
+    # joint limitation
+    upper = 1.0e9
+    lower = -1.0e9
+
+    lim_item = elm.find('limit')
+    if lim_item is not None:
+        if 'upper' in lim_item.attrib:
+            upper = float(lim_item.attrib['upper'])
+        if 'lower' in lim_item.attrib:
+            lower = float(lim_item.attrib['lower'])
 
     joint_dict = {
         'fixed': joint.FixedJoint,
@@ -76,7 +89,8 @@ def _elm2joint(elm: ET.Element, links: list[Transform]):
         return joint_dict[type_name](
             parent, child,
             origin=org,
-            axis=axis
+            axis=axis,
+            limit=joint.Limitation(upper, lower)
         )
     else:
         raise ValueError(f'{type_name} is not valid')

@@ -25,9 +25,9 @@ class Chain():
 
         # add tag
         for l in self.links:
-            l.node.link = True
+            l.node.link = l.name
         for j in self.joints:
-            j.origin.node.joint = True
+            j.origin.node.joint = j.type
 
     @property
     def position(self):
@@ -43,6 +43,11 @@ class Chain():
             return None
         else:
             return candidates[0]
+
+    def get_joints(self, names: list[str] = []):
+
+        jj = [j for j in self.joints if j.origin.name in names]
+        return jj
 
     def fk(self, positions: list):
         # forward kinematics
@@ -95,8 +100,13 @@ class Chain():
     def tree(self):
         def f(pre: str, node: Node):
             prefix = ''
+            suffix = ''
             if 'joint' in node.__dict__:
-                prefix = '*'
-            return f'{pre}{prefix}{node.name}'
+                j = self.get_joints(names=[node.name])[0]
+                prefix = f'[{j.type.name}] '
+                if j.type != BaseJoint.Type.FIXED:
+                    suffix = f' ({j.limit.lower:0.2f}--{j.limit.upper:0.2f})'
+
+            return f'{pre}{prefix}{node.name}{suffix}'
 
         return self.root.tree(formatter=f)

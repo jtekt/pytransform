@@ -58,6 +58,8 @@ class Chain():
                  reference_tf: list[Transform],
                  target_positions: list[np.ndarray],
                  initial_position: list[np.ndarray]):
+        if len(target_positions) != len(reference_tf):
+            raise ValueError('#target and #tf must be equal')
 
         def loss_position_f(position: list):
             self.fk(position)

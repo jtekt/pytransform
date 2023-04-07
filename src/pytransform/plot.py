@@ -168,10 +168,12 @@ def rev_joint(j: jnt.BaseJoint,
         # linestyle='dotted'
     )
 
+    # ax.text(end[0], end[1], end[2], j.name, zdir=rot_axis)
+
     # ring
     for s in range(num_rings):
         plot_ring((s+1/num_rings)*scale,
-                  j.origin.position, rot_axis, ax, color)
+                  j.origin.position, rot_axis, ax, color, linestyle='dotted')
 
     # b = np.array(j.axis[:-1])
 
@@ -198,11 +200,12 @@ def prismatic_joint(j: jnt.BaseJoint,
         color=color
         # linestyle='dotted'
     )
+    # https://matplotlib.org/stable/gallery/mplot3d/text3d.html
     # slide guide
     plot_ring(scale, start,
-              slide_axis, ax, color, resolution=4)
+              slide_axis, ax, color, resolution=4, linestyle='dotted')
     plot_ring(scale, end,
-              slide_axis, ax, color, resolution=4)
+              slide_axis, ax, color, resolution=4, linestyle='dotted')
 
 
 def chain(ch: Chain, ax: plt.Axes = None,
@@ -236,7 +239,8 @@ def ring_point(r: float = 1, resolution: int = 16):
 def plot_ring(radius: float = 1.0, center=np.array([0, 0, 0]),
               axis=np.array([0, 0, 1]),
               ax: plt.Axes = None,
-              color=(.5, 0, 0), resolution: int = 16):
+              color=(.5, 0, 0), resolution: int = 16,
+              linestyle='dotted'):
     if ax is None:
         ax = plt.gca()
 
@@ -252,6 +256,6 @@ def plot_ring(radius: float = 1.0, center=np.array([0, 0, 0]),
         pr[:, 0],
         pr[:, 1],
         pr[:, 2],
-        color=color
-        # linestyle='dotted'
+        color=color,
+        linestyle=linestyle
     )

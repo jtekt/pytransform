@@ -9,6 +9,7 @@ from pytransform import urdf
 test_urdf_items = {
     'r2d2': ('./files/r2d2.urdf', 'box'),
     'mycobot': ('./files/mycobot_style.urdf', 'hand'),
+    'human': ('./files/human165.urdf', 'head_default'),
 }
 
 

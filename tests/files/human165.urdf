@@ -15,11 +15,11 @@
     <color rgba="0 0 0 1"/>
   </material>
   <!--***********-->
-  <link name="body_default">
+  <link name="body_root_default">
     </link>
   <link name="waist_default">
     </link>
-  <link name="torso_default">
+  <link name="chest_default">
     <visual>
       <geometry>
         <cylinder length="0.45375" radius="0.03"/>
@@ -56,15 +56,15 @@
       <origin rpy="0 0 0" xyz="0 0 -0.45375"/>
     </visual>
   </link>
-  <joint name="torso_default" type="fixed">
+  <joint name="lumbar_default" type="fixed">
     <parent link="waist_default"/>
-    <child link="torso_default"/>
+    <child link="chest_default"/>
     <origin rpy="0 0 0" xyz="0 0 0.605"/>
   </joint>
-  <joint name="waist_default" type="revolute">
+  <joint name="spine_default" type="revolute">
     <axis xyz="0 1 0"/>
     <limit effort="1000" lower="-.2" upper="1." velocity="0.5"/>
-    <parent link="body_default"/>
+    <parent link="body_root_default"/>
     <child link="waist_default"/>
     <origin rpy="0 0 0" xyz="0 0 0"/>
   </joint>
@@ -98,33 +98,33 @@
       <origin rpy="0 0 0" xyz="0.044000000000000004 -0.044 0"/>
     </visual>
   </link>
-  <joint name="r_head_default" type="revolute">
+  <joint name="roll_head_default" type="revolute">
     <axis xyz="1 0 0"/>
     <limit effort="1000" lower="-1." upper="1." velocity="0.5"/>
-    <parent link="torso_default"/>
+    <parent link="chest_default"/>
     <child link="r_head_default"/>
     <origin rpy="0 0 0" xyz="0 0 0.055"/>
   </joint>
-  <joint name="y_head_default" type="revolute">
+  <joint name="yaw_head_default" type="revolute">
     <axis xyz="0 0 1"/>
     <limit effort="1000" lower="-1.4" upper="1.4" velocity="0.5"/>
     <parent link="r_head_default"/>
     <child link="y_head_default"/>
     <origin rpy="0 0 0" xyz="0 0 0"/>
   </joint>
-  <joint name="p_head_default" type="revolute">
+  <joint name="pitch_head_default" type="revolute">
     <axis xyz="0 -1 0"/>
     <limit effort="1000" lower="-1.5" upper="1.5" velocity="0.5"/>
     <parent link="y_head_default"/>
     <child link="p_head_default"/>
     <origin rpy="0 0 0" xyz="0 0 0"/>
   </joint>
-  <joint name="head_default" type="fixed">
+  <joint name="head_fixed_default" type="fixed">
     <parent link="p_head_default"/>
     <child link="head_default"/>
     <origin rpy="0 0 0" xyz="0.055 0 0.11"/>
   </joint>
-  <link name="l_y_shoulder_default">
+  <link name="left_y_shoulder_default">
     <visual>
       <geometry>
         <sphere radius="0.03"/>
@@ -133,23 +133,23 @@
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
   </link>
-  <joint name="l_y_shoulder_default" type="revolute">
+  <joint name="left_shoulder_add_default" type="revolute">
     <axis xyz="0 0 -1"/>
     <limit effort="1000" lower="-1.7" upper="1.1" velocity="0.5"/>
-    <parent link="torso_default"/>
-    <child link="l_y_shoulder_default"/>
+    <parent link="chest_default"/>
+    <child link="left_y_shoulder_default"/>
     <origin rpy="0 0 0" xyz="0 0.17600000000000002 0"/>
   </joint>
-  <link name="l_p_shoulder_default">
+  <link name="left_p_shoulder_default">
         </link>
-  <joint name="l_p_shoulder_default" type="revolute">
+  <joint name="left_flx_shoulder_default" type="revolute">
     <axis xyz="1 0 0"/>
     <limit effort="1000" lower="-0.4" upper="3.3" velocity="0.5"/>
-    <parent link="l_y_shoulder_default"/>
-    <child link="l_p_shoulder_default"/>
+    <parent link="left_y_shoulder_default"/>
+    <child link="left_p_shoulder_default"/>
     <origin rpy="0 0 0" xyz="0 0 0"/>
   </joint>
-  <link name="l_shoulder_default">
+  <link name="left_upper_arm_default">
     <visual>
       <geometry>
         <cylinder length="0.35200000000000004" radius="0.03"/>
@@ -165,14 +165,14 @@
       <origin rpy="0 0 0" xyz="0 0 -0.35200000000000004"/>
     </visual>
   </link>
-  <joint name="l_r_shoulder_default" type="revolute">
+  <joint name="left_shoulder_rot_default" type="revolute">
     <axis xyz="0 0 1"/>
     <limit effort="1000" lower="-1.7" upper="1.5" velocity="0.5"/>
-    <parent link="l_p_shoulder_default"/>
-    <child link="l_shoulder_default"/>
+    <parent link="left_p_shoulder_default"/>
+    <child link="left_upper_arm_default"/>
     <origin rpy="0 0 0" xyz="0 0 0"/>
   </joint>
-  <link name="l_elbow_default">
+  <link name="left_forearm_default">
     <visual>
       <geometry>
         <cylinder length="0.22" radius="0.03"/>
@@ -188,21 +188,21 @@
       <origin rpy="0 0 0" xyz="0 0 -0.22"/>
     </visual>
   </link>
-  <joint name="l_elbow_default" type="revolute">
+  <joint name="left_elbow_flx_default" type="revolute">
     <axis xyz="0 -1 0"/>
     <limit effort="1000" lower="0" upper="2.5" velocity="0.5"/>
-    <parent link="l_shoulder_default"/>
-    <child link="l_elbow_default"/>
+    <parent link="left_upper_arm_default"/>
+    <child link="left_forearm_default"/>
     <origin rpy="0 0 0" xyz="0 0 -0.35200000000000004"/>
   </joint>
-  <link name="l_wrist_default">
+  <link name="left_hand_default">
         </link>
-  <joint name="l_wrist_default" type="fixed">
-    <parent link="l_elbow_default"/>
-    <child link="l_wrist_default"/>
+  <joint name="left_wrist_fixed_default" type="fixed">
+    <parent link="left_forearm_default"/>
+    <child link="left_hand_default"/>
     <origin rpy="0 0 0" xyz="0 0 -0.22"/>
   </joint>
-  <link name="r_y_shoulder_default">
+  <link name="right_y_shoulder_default">
     <visual>
       <geometry>
         <sphere radius="0.03"/>
@@ -211,23 +211,23 @@
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
   </link>
-  <joint name="r_y_shoulder_default" type="revolute">
+  <joint name="right_shoulder_add_default" type="revolute">
     <axis xyz="0 0 1"/>
     <limit effort="1000" lower="-1.7" upper="1.1" velocity="0.5"/>
-    <parent link="torso_default"/>
-    <child link="r_y_shoulder_default"/>
+    <parent link="chest_default"/>
+    <child link="right_y_shoulder_default"/>
     <origin rpy="0 0 0" xyz="0 -0.17600000000000002 0"/>
   </joint>
-  <link name="r_p_shoulder_default">
+  <link name="right_p_shoulder_default">
         </link>
-  <joint name="r_p_shoulder_default" type="revolute">
+  <joint name="right_flx_shoulder_default" type="revolute">
     <axis xyz="-1 0 0"/>
     <limit effort="1000" lower="-0.4" upper="3.3" velocity="0.5"/>
-    <parent link="r_y_shoulder_default"/>
-    <child link="r_p_shoulder_default"/>
+    <parent link="right_y_shoulder_default"/>
+    <child link="right_p_shoulder_default"/>
     <origin rpy="0 0 0" xyz="0 0 0"/>
   </joint>
-  <link name="r_shoulder_default">
+  <link name="right_upper_arm_default">
     <visual>
       <geometry>
         <cylinder length="0.35200000000000004" radius="0.03"/>
@@ -243,14 +243,14 @@
       <origin rpy="0 0 0" xyz="0 0 -0.35200000000000004"/>
     </visual>
   </link>
-  <joint name="r_r_shoulder_default" type="revolute">
+  <joint name="right_shoulder_rot_default" type="revolute">
     <axis xyz="0 0 -1"/>
     <limit effort="1000" lower="-1.7" upper="1.5" velocity="0.5"/>
-    <parent link="r_p_shoulder_default"/>
-    <child link="r_shoulder_default"/>
+    <parent link="right_p_shoulder_default"/>
+    <child link="right_upper_arm_default"/>
     <origin rpy="0 0 0" xyz="0 0 0"/>
   </joint>
-  <link name="r_elbow_default">
+  <link name="right_forearm_default">
     <visual>
       <geometry>
         <cylinder length="0.22" radius="0.03"/>
@@ -266,21 +266,21 @@
       <origin rpy="0 0 0" xyz="0 0 -0.22"/>
     </visual>
   </link>
-  <joint name="r_elbow_default" type="revolute">
+  <joint name="right_elbow_flx_default" type="revolute">
     <axis xyz="0 -1 0"/>
     <limit effort="1000" lower="0" upper="2.5" velocity="0.5"/>
-    <parent link="r_shoulder_default"/>
-    <child link="r_elbow_default"/>
+    <parent link="right_upper_arm_default"/>
+    <child link="right_forearm_default"/>
     <origin rpy="0 0 0" xyz="0 0 -0.35200000000000004"/>
   </joint>
-  <link name="r_wrist_default">
+  <link name="right_hand_default">
         </link>
-  <joint name="r_wrist_default" type="fixed">
-    <parent link="r_elbow_default"/>
-    <child link="r_wrist_default"/>
+  <joint name="right_wrist_fixed_default" type="fixed">
+    <parent link="right_forearm_default"/>
+    <child link="right_hand_default"/>
     <origin rpy="0 0 0" xyz="0 0 -0.22"/>
   </joint>
-  <link name="l_y_hip_default">
+  <link name="left_y_hip_default">
     <visual>
       <geometry>
         <sphere radius="0.03"/>
@@ -289,23 +289,24 @@
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
   </link>
-  <joint name="l_y_hip_default" type="revolute">
-    <axis xyz="0 0 -1"/>
-    <limit effort="1000" lower="-.1" upper="0.6" velocity="0.5"/>
-    <parent link="body_default"/>
-    <child link="l_y_hip_default"/>
+  <!-- opensim : flx,add,rot -->
+  <joint name="left_hip_add_default" type="revolute">
+    <axis xyz="0 0  -1.0"/>
+    <limit effort="1000" lower="-0.87" upper="0.5" velocity="0.5"/>
+    <parent link="body_root_default"/>
+    <child link="left_y_hip_default"/>
     <origin rpy="0 0 0" xyz="0 0.132 0"/>
   </joint>
-  <link name="l_p_hip_default">
+  <link name="left_p_hip_default">
         </link>
-  <joint name="l_p_hip_default" type="revolute">
+  <joint name="left_hip_flx_default" type="revolute">
     <axis xyz="1 0 0"/>
-    <limit effort="1000" lower="-0.4" upper="3.3" velocity="0.5"/>
-    <parent link="l_y_hip_default"/>
-    <child link="l_p_hip_default"/>
+    <limit effort="1000" lower="-0.5" upper="2.1" velocity="0.5"/>
+    <parent link="left_y_hip_default"/>
+    <child link="left_p_hip_default"/>
     <origin rpy="0 0 0" xyz="0 0 0"/>
   </joint>
-  <link name="l_hip_default">
+  <link name="left_thigh_default">
     <visual>
       <geometry>
         <cylinder length="0.33" radius="0.03"/>
@@ -321,14 +322,14 @@
       <origin rpy="0 0 0" xyz="0 0 -0.33"/>
     </visual>
   </link>
-  <joint name="l_r_hip_default" type="revolute">
+  <joint name="left_hip=rot_default" type="revolute">
     <axis xyz="0 -1 0"/>
-    <limit effort="1000" lower="-0.4" upper="0.7" velocity="0.5"/>
-    <parent link="l_p_hip_default"/>
-    <child link="l_hip_default"/>
+    <limit effort="1000" lower="-0.7" upper="0.7" velocity="0.5"/>
+    <parent link="left_p_hip_default"/>
+    <child link="left_thigh_default"/>
     <origin rpy="0 0 0" xyz="0 0 0"/>
   </joint>
-  <link name="l_knee_default">
+  <link name="left_shank_default">
     <visual>
       <geometry>
         <cylinder length="0.44" radius="0.03"/>
@@ -344,21 +345,21 @@
       <origin rpy="0 0 0" xyz="0 0 -0.44"/>
     </visual>
   </link>
-  <joint name="l_knee_default" type="revolute">
-    <axis xyz="0 -1 0"/>
-    <limit effort="1000" lower="-2.5" upper="0" velocity="0.5"/>
-    <parent link="l_hip_default"/>
-    <child link="l_knee_default"/>
+  <joint name="left_knee_flx_default" type="revolute">
+    <axis xyz="0 1 0"/>
+    <limit effort="1000" lower="0" upper="2.5" velocity="0.5"/>
+    <parent link="left_thigh_default"/>
+    <child link="left_shank_default"/>
     <origin rpy="0 0 0" xyz="0 0 -0.33"/>
   </joint>
-  <link name="l_ankle_default">
+  <link name="left_foot_default">
         </link>
-  <joint name="l_ankle_default" type="fixed">
-    <parent link="l_knee_default"/>
-    <child link="l_ankle_default"/>
+  <joint name="left_ankle_default" type="fixed">
+    <parent link="left_shank_default"/>
+    <child link="left_foot_default"/>
     <origin rpy="0 0 0" xyz="0 0 -0.44"/>
   </joint>
-  <link name="r_y_hip_default">
+  <link name="right_y_hip_default">
     <visual>
       <geometry>
         <sphere radius="0.03"/>
@@ -367,23 +368,24 @@
       <origin rpy="0 0 0" xyz="0 0 0"/>
     </visual>
   </link>
-  <joint name="r_y_hip_default" type="revolute">
-    <axis xyz="0 0 -1"/>
-    <limit effort="1000" lower="-.1" upper="0.6" velocity="0.5"/>
-    <parent link="body_default"/>
-    <child link="r_y_hip_default"/>
+  <!-- opensim : flx,add,rot -->
+  <joint name="right_hip_add_default" type="revolute">
+    <axis xyz="0 0  1.0"/>
+    <limit effort="1000" lower="-0.87" upper="0.5" velocity="0.5"/>
+    <parent link="body_root_default"/>
+    <child link="right_y_hip_default"/>
     <origin rpy="0 0 0" xyz="0 -0.132 0"/>
   </joint>
-  <link name="r_p_hip_default">
+  <link name="right_p_hip_default">
         </link>
-  <joint name="r_p_hip_default" type="revolute">
+  <joint name="right_hip_flx_default" type="revolute">
     <axis xyz="-1 0 0"/>
-    <limit effort="1000" lower="-0.4" upper="3.3" velocity="0.5"/>
-    <parent link="r_y_hip_default"/>
-    <child link="r_p_hip_default"/>
+    <limit effort="1000" lower="-0.5" upper="2.1" velocity="0.5"/>
+    <parent link="right_y_hip_default"/>
+    <child link="right_p_hip_default"/>
     <origin rpy="0 0 0" xyz="0 0 0"/>
   </joint>
-  <link name="r_hip_default">
+  <link name="right_thigh_default">
     <visual>
       <geometry>
         <cylinder length="0.33" radius="0.03"/>
@@ -399,14 +401,14 @@
       <origin rpy="0 0 0" xyz="0 0 -0.33"/>
     </visual>
   </link>
-  <joint name="r_r_hip_default" type="revolute">
+  <joint name="right_hip=rot_default" type="revolute">
     <axis xyz="0 -1 0"/>
-    <limit effort="1000" lower="-0.4" upper="0.7" velocity="0.5"/>
-    <parent link="r_p_hip_default"/>
-    <child link="r_hip_default"/>
+    <limit effort="1000" lower="-0.7" upper="0.7" velocity="0.5"/>
+    <parent link="right_p_hip_default"/>
+    <child link="right_thigh_default"/>
     <origin rpy="0 0 0" xyz="0 0 0"/>
   </joint>
-  <link name="r_knee_default">
+  <link name="right_shank_default">
     <visual>
       <geometry>
         <cylinder length="0.44" radius="0.03"/>
@@ -422,18 +424,18 @@
       <origin rpy="0 0 0" xyz="0 0 -0.44"/>
     </visual>
   </link>
-  <joint name="r_knee_default" type="revolute">
-    <axis xyz="0 -1 0"/>
-    <limit effort="1000" lower="-2.5" upper="0" velocity="0.5"/>
-    <parent link="r_hip_default"/>
-    <child link="r_knee_default"/>
+  <joint name="right_knee_flx_default" type="revolute">
+    <axis xyz="0 1 0"/>
+    <limit effort="1000" lower="0" upper="2.5" velocity="0.5"/>
+    <parent link="right_thigh_default"/>
+    <child link="right_shank_default"/>
     <origin rpy="0 0 0" xyz="0 0 -0.33"/>
   </joint>
-  <link name="r_ankle_default">
+  <link name="right_foot_default">
         </link>
-  <joint name="r_ankle_default" type="fixed">
-    <parent link="r_knee_default"/>
-    <child link="r_ankle_default"/>
+  <joint name="right_ankle_default" type="fixed">
+    <parent link="right_shank_default"/>
+    <child link="right_foot_default"/>
     <origin rpy="0 0 0" xyz="0 0 -0.44"/>
   </joint>
 </robot>

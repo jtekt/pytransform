@@ -46,6 +46,10 @@ class BaseJoint():
         # self.__type = self.Type.MISC
 
     @property
+    def name(self):
+        return self.origin.name
+
+    @property
     def position(self):
         return self.__position
 

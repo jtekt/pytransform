@@ -5,7 +5,7 @@ import quaternion
 from mpl_toolkits.mplot3d.axes3d import Axes3D
 
 import pytransform as pytf
-from pytransform.joint import RevolveJoint
+from pytransform.joint import RevoluteJoint
 from pytransform.tf import Transform
 
 
@@ -28,14 +28,14 @@ def main():
 
     sazae = Transform(name='sazae')
     fune = Transform(name='fune')
-    j = RevolveJoint(
+    j = RevoluteJoint(
         parent=namihei, child=sazae,
         origin=fune
     )
 
     Transform(name='katsuo').set_parent(fune)
     Transform(name='wakame').set_parent(fune)
-    RevolveJoint(
+    RevoluteJoint(
         parent=sazae, child=Transform(name='tara'),
         origin=Transform(name='masuo')
     )

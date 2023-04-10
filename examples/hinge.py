@@ -5,7 +5,7 @@ import quaternion
 from mpl_toolkits.mplot3d.axes3d import Axes3D
 
 import pytransform as pytf
-from pytransform.joint import RevolveJoint
+from pytransform.joint import RevoluteJoint
 from pytransform.tf import Transform
 
 
@@ -31,7 +31,7 @@ def main():
         name='child'
     )
 
-    j = RevolveJoint(
+    j = RevoluteJoint(
         parent=mytf, child=child_tf,
         origin=Transform(mytf.position, name='hinge'),
         axis=np.array([0, 0, 1]),

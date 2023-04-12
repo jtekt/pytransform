@@ -209,12 +209,12 @@ def prismatic_joint(j: jnt.BaseJoint,
 
 
 def chain(ch: Chain, ax: plt.Axes = None,
-          cmap=coordinate_cmap('Dark2'), scale: float = 1.0):
+          cmap=coordinate_cmap('Dark2'), scale: float = 1.0, show_label=True):
     if ax is None:
         ax = plt.gca()
 
     for link in ch.links:
-        coordinates(link, ax=ax, colors=cmap, scale=scale,
+        coordinates(link, ax=ax, colors=cmap, scale=scale, show_name=show_label,
                     name_label_offset=np.array([0, 0, scale]))
         for child in link.children:
             # link

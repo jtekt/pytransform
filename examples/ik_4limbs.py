@@ -21,6 +21,15 @@ def manipulator(filename: str,
                 is_save: bool = False):
 
     robot = urdf.chain_from_urdf(filename)
+    mi, ma = robot.bbox()
+    size = (ma-mi)
+
+    # visualize
+    fig = plt.figure(figsize=(800/72, 800/72))
+    ax: plt.Axes = fig.add_subplot(projection='3d')
+    # pytf.plot.chain(robot, ax=ax, scale=size.mean()*0.1, show_label=False.as_integer_ratio,
+    #                 cmap=pytf.plot.coordinate_cmap('Pastel1'))
+
     print(f'robot name: {robot.name}')
     print(f'#links: {len(robot.links)}')
     print(f'#joints: {len(robot.joints)}')
@@ -52,19 +61,13 @@ def manipulator(filename: str,
 
     # print(f'manipulator structure: \n\r{robot.links[0].tree()}')
 
-    # visualize
-    fig = plt.figure(figsize=(800/72, 800/72))
-    ax: plt.Axes = fig.add_subplot(projection='3d')
-
-    mi, ma = robot.bbox()
-    size = (ma-mi)
     pytf.plot.corners(size=[1.1*size.max()]*3, center=0.5*(mi+ma), ax=ax)
 
     ax.set_xlabel('x')
     ax.set_ylabel('y')
     ax.set_zlabel('z')
 
-    pytf.plot.chain(robot, ax=ax, scale=size.mean()*0.1)
+    pytf.plot.chain(robot, ax=ax, scale=size.mean()*0.1, show_label=False)
     for i, t in enumerate(target_positions):
         ax.scatter(
             t[0], t[1], t[2],
@@ -86,7 +89,7 @@ def main():
 
     default_urdf = os.path.join(
         os.path.dirname(__file__),
-        '../tests/files/human165.urdf'
+        '../tests/files/human-xyz-165.urdf'
     )
 
     parser = ArgumentParser()
@@ -101,10 +104,10 @@ def main():
     args = parser.parse_args()
 
     targets = [
-        np.array([0.25, 0.1, 1.0]),
-        np.array([0.25, -0.1, 0.8]),
-        np.array([0.0, 0.1, -0.6]),
-        np.array([0.0, -0.1, -0.4])
+        np.array([0.25+1, 0.1, 1.0]),
+        np.array([0.25+1, -0.1, 0.2]),
+        np.array([0.0+1, 0.1, -0.6]),
+        np.array([0.1+1, -0.1, -0.4])
     ]
 
     manipulator(args.urdf, targets, args.save)

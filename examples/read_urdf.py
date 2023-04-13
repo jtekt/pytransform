@@ -35,7 +35,7 @@ def read(filename: str, is_save: bool, scale=1.0, pose='zero'):
     ax.set_ylabel('y')
     ax.set_zlabel('z')
 
-    tfplot.chain(robot, scale=scale)
+    tfplot.chain(robot, scale=size.min()*0.1)
     ax.view_init(elev=45, azim=45)
     ax.set_proj_type('ortho')
     ax.set_aspect('equal')

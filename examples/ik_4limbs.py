@@ -18,7 +18,8 @@ from pytransform.tf import Transform
 
 def manipulator(filename: str,
                 target_positions: list[np.ndarray],
-                is_save: bool = False):
+                is_save: bool = False,
+                method='BFGS'):
 
     robot = urdf.chain_from_urdf(filename)
     mi, ma = robot.bbox()
@@ -99,6 +100,7 @@ def main():
     parser.add_argument('--target', type=float, nargs=3,
                         help='target position for end effector',
                         default=[1.5, 1.5, 4.0])
+    parser.add_argument('--method', default='BFGS')
     parser.add_argument('--save', action='store_true')
 
     args = parser.parse_args()
@@ -110,7 +112,7 @@ def main():
         np.array([0.1+1, -0.1, -0.4])
     ]
 
-    manipulator(args.urdf, targets, args.save)
+    manipulator(args.urdf, targets, args.save, method=args.method)
 
 
 if __name__ == '__main__':

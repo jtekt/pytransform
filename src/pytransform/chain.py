@@ -57,7 +57,8 @@ class Chain():
     def ik_solve(self,
                  reference_tf: list[Transform],
                  target_positions: list[np.ndarray],
-                 initial_position: list[np.ndarray]):
+                 initial_position: list[np.ndarray],
+                 method: str = 'BFGS'):
         if len(target_positions) != len(reference_tf):
             raise ValueError('#target and #tf must be equal')
 
@@ -77,7 +78,7 @@ class Chain():
 
         le_lsq = optimize.minimize(
             loss_position_f,
-            initial_position)
+            initial_position, method=method)
         return le_lsq
 
     def bbox(self) -> tuple[np.ndarray, np.ndarray]:

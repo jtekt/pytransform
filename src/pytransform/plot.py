@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
@@ -49,6 +51,29 @@ def corners(center=(0, 0, 0), size=(1, 1, 1), ax: plt.Axes = None, color=(0.1, 0
     ax.scatter3D(cube[:, 0], cube[:, 1], cube[:, 2], color=color)
 
 
+def rect_xy(tf: Transform,
+            size: tuple[float, float],
+            center: tuple[float, float],
+            ax: plt.Axes = None, color=(0.1, 0.1, 0.1, 0.1)):
+    if ax is None:
+        ax = plt.gca()
+    cc = np.array([center[0], center[1], 0])
+    cw = tf.position+cc
+    ex = tf.transform_direction(np.array([1.0, 0, 0]))
+    ey = tf.transform_direction(np.array([0, 1.0, 0]))
+    rect = []
+    w, h = size
+
+    for k in ([-0.5, 0.5], [-0.5, -0.5], [0.5, -0.5], [0.5, 0.5]):
+        # p = np.array([i*w*ex, j*h*ey, 0])
+        rect.append(cw + k[0]*w*ex + k[1]*h*ey)
+    rect = np.array(rect)
+    ax.plot(rect[:, 0], rect[:, 1], rect[:, 2], color=color)
+    ax.plot([rect[-1, 0], rect[0, 0]],
+            [rect[-1, 1], rect[0, 1]],
+            [rect[-1, 2], rect[0, 2]], color=color)
+
+
 def coordinates(
         tf: Transform,
         ax: plt.Axes = None,
@@ -91,15 +116,16 @@ def coordinates_all(
         tf: Transform,
         ax: plt.Axes = None,
         scale: float = 1.0,
-        colors: list = coordinate_cmap('Set2')):
+        colors: list = coordinate_cmap('Set2'),
+        name_label_offset=np.array([0, 0, 1.0])):
     if ax is None:
         ax = plt.gca()
     coordinates(tf, ax, scale, colors,
-                name_label_offset=np.array([0, 0, scale]))
+                name_label_offset=name_label_offset)
 
     for child in tf.children:
         coordinates_all(child, ax, scale, colors,
-                        name_label_offset=np.array([0, 0, scale]))
+                        name_label_offset=name_label_offset)
         # link
         ax.plot(
             [tf.position[0], child.position[0]],

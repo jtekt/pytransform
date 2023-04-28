@@ -20,6 +20,10 @@ direction_items = {
     'c': (np.array([1, 1, 1]), np.array([1, -1, 1])),
     'd': (np.array([1, 0, 0]), np.array([1, 1, 0])),
     'e': (np.array([1, 2, 3]), np.array([4, 5, 6])),
+    'g': (np.array([0, 0, 1]), np.array([1, 1, 1])),
+    'h': (np.array([0, 0, 1]), np.array([0, 0, -1])),
+    'i': (np.array([0, 0, 1]), np.array([1, 1, -1])),
+    'j': (np.array([1, 0, 0]), np.array([-1, 0, 0])),
 }
 
 
@@ -32,9 +36,9 @@ def test_toward(a, b):
 
     an = a/(np.linalg.norm(a))
     bn = b/(np.linalg.norm(b))
-    theta = np.arccos(np.dot(an, bn))
+    theta = np.arccos(np.clip(np.dot(an, bn), -1.0, 1.0))
     v = quaternion.as_rotation_vector(q)
-    print(f'rotation vector: {v}')
+    print(f'rotation vector: {v}, norm: {np.linalg.norm(v)}')
     print(f'theta: {theta} rad')
     assert (theta - np.linalg.norm(v))**2 < 1e-3
     assert np.dot(a, v) < 1e-3

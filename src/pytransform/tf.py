@@ -69,6 +69,18 @@ class Transform():
     def scale(self):
         return self.__scale
 
+    @property
+    def ex(self):
+        return self.transform_direction(np.array([1.0, 0.0, 0.0]))
+
+    @property
+    def ey(self):
+        return self.transform_direction(np.array([0.0, 1.0, 0.0]))
+
+    @property
+    def ez(self):
+        return self.transform_direction(np.array([0.0, 0.0, 1.0]))
+
     # hierarchy
     @property
     def children(self):

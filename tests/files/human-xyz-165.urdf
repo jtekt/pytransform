@@ -28,21 +28,21 @@
     <parent link="base_link_default"/>
     <child link="stage_x_default"/>
     <origin rpy="0 0 0" xyz="0 0 0"/>
-    <limit effort="1000" lower="-2.5" upper="2.5" velocity="0.5"/>
+    <limit effort="1000" lower="-10" upper="10" velocity="0.5"/>
   </joint>
   <joint name="rail_y_default" type="prismatic">
     <axis xyz="0 1 0"/>
     <parent link="stage_x_default"/>
     <child link="stage_y_default"/>
     <origin rpy="0 0 0" xyz="0 0 0"/>
-    <limit effort="1000" lower="-2.5" upper="2.5" velocity="0.5"/>
+    <limit effort="1000" lower="-10" upper="10" velocity="0.5"/>
   </joint>
   <joint name="rail_z_default" type="prismatic">
     <axis xyz="0 0 1"/>
     <parent link="stage_y_default"/>
     <child link="stage_z_default"/>
     <origin rpy="0 0 0" xyz="0 0 0"/>
-    <limit effort="1000" lower="-2.5" upper="2.5" velocity="0.5"/>
+    <limit effort="1000" lower="-10" upper="10" velocity="0.5"/>
   </joint>
   <joint name="hinge_roll_default" type="revolute">
     <axis xyz="1 0 0"/>

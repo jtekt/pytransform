@@ -27,8 +27,8 @@ def main():
     cam_mat = cam.camera_intrinsic_matrix(fx, fy, cx, cy)
     print(f'cam mat: {cam_mat}')
     # point in camera coordinate
-    pc = (cam_mat@world_point.position.reshape((3, 1))).ravel()
-    pc = pc / world_point.position[2]
+    # pc = (cam_mat@world_point.position.reshape((3, 1))).ravel()
+    pc = cam.project_to_camera_plane(world_point.position, cam_mat)
 
     print(f'pc: {pc}')
 
@@ -38,6 +38,8 @@ def main():
         np.array([pc[0], pc[1], 0]))
 
     # plot
+    dark2 = tfplot.coordinate_cmap('Dark2')
+
     fig = plt.figure(figsize=(800/72, 800/72))
     ax: plt.Axes = fig.add_subplot(projection='3d')
     ax.set_xlabel('x')
@@ -46,7 +48,8 @@ def main():
 
     tfplot.coordinates_all(
         camera, scale=1000, name_label_offset=np.array([100.0, 0.0, 0.0]))
-    tfplot.rect_xy(cam_plane, size=(cx*2, cy*2), center=(cx, cy))
+    tfplot.rect_xy(cam_plane, size=(cx*2, cy*2),
+                   center=(cx, cy), color=dark2[5])
 
     # ax.legend()
     # ax.view_init(elev=45, azim=45)

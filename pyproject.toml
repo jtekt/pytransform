@@ -17,6 +17,7 @@ dependencies = [
   "scipy",
   "numpy",
   "numpy-quaternion",
+  "anytree",
 ]
 
 dynamic = ["version"]

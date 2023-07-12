@@ -18,12 +18,13 @@ dependencies = [
   "numpy",
   "numpy-quaternion",
   "anytree",
+  "matplotlib",
 ]
 
 dynamic = ["version"]
 
-[project.optional-dependencies]
-plot = ["matplotlib"]
+# [project.optional-dependencies]
+# plot = ["matplotlib"]
 
 [tool.setuptools.packages.find]
 exclude = ["build", "tests"]

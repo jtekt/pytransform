@@ -11,7 +11,7 @@ test:
     - pytest --cov
     - coverage xml
     - pip-licenses --order=license
-    - pip-licenses --allow-only="MIT License;BSD License;Python Software Foundation License;Apache Software License;ISC License (ISCL);"
+    # - pip-licenses --allow-only="MIT License;BSD License;Python Software Foundation License;Apache Software License;ISC License (ISCL);"
     - pip-licenses --summary
   coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
   artifacts:

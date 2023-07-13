@@ -1,18 +1,19 @@
 stages:
   - test
   - license
-image: python:3.8
 
+default:
+  image: python:3.8
+  before_script:
+    - pip install -U pip && pip install -e .
 test:
   stage: test
 
   script:
     # - pip install git+${CI_PROJECT_URL}@${CI_COMMIT_SHA}
     - ls -l # check repository files
-    - pip install -U pip && pip install .
     - pip install pytest-cov
-    # - pytest --cov --cov-report term --cov-report xml:coverage.xml
-    - pytest --cov
+    - pytest --cov=src --cov-report term --cov-report xml:coverage.xml
     - coverage xml
   coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
   artifacts:
@@ -22,10 +23,10 @@ test:
         path: coverage.xml
   tags:
     - dind
+
 license:
   stage: license
   script:
-    - pip install -U pip && pip install .
     - pip install pip-licenses
     - pip-licenses --order=license
     # - pip-licenses --allow-only="MIT License;BSD License;Python Software Foundation License;Apache Software License;ISC License (ISCL);"

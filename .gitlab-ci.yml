@@ -10,7 +10,7 @@ test:
     - ls -l # check repository files
     - pip install -U pip && pip install .
     - pip install pytest-cov pip-licenses
-    - pytest --cov=src --cov-report xml:coverage.xml
+    - pytest --cov=src --cov-report term --cov-report xml:coverage.xml
     - pip-licenses --order=license
     # - pip-licenses --allow-only="MIT License;BSD License;Python Software Foundation License;Apache Software License;ISC License (ISCL);"
     - pip-licenses --summary

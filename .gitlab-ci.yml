@@ -7,6 +7,7 @@ test:
 
   script:
     # - pip install git+${CI_PROJECT_URL}@${CI_COMMIT_SHA}
+    - ls -l # check repository files
     - pip install .
     - pip install pytest-cov pip-licenses
     - pytest --cov=src --cov-report term --cov-report xml:coverage.xml

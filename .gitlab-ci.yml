@@ -31,3 +31,5 @@ license:
     - pip-licenses --order=license
     # - pip-licenses --allow-only="MIT License;BSD License;Python Software Foundation License;Apache Software License;ISC License (ISCL);"
     - pip-licenses --summary
+   tags:
+    - dind

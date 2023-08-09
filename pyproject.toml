@@ -1,33 +1,23 @@
-[build-system]
-build-backend = "setuptools.build_meta"
-requires = ["setuptools", "setuptools-scm"]
-
-[project]
-authors = [{name = "KUBOTA Naoki", email = "naoki_kubota@jtekt.co.jp"}]
-classifiers = [
-  "Programming Language :: Python :: 3",
-  " Operating System :: OS Independent",
-]
-description = "Package to control transform of 3D Objects"
+[tool.poetry]
+authors = ["naoki_kubota <naoki_kubota@jtekt.co.jp>"]
+description = ""
+license = "MIT License"
 name = "pytransform"
 readme = "README.md"
-requires-python = ">=3.8"
+version = "0.4.0"
 
-dependencies = [
-  "scipy",
-  "numpy",
-  "numpy-quaternion",
-  "anytree",
-  "matplotlib",
-]
+[tool.poetry.dependencies]
+python = "<3.13,>=3.10"
+scipy = "^1.11.1"
+numpy = "^1.25.2"
+numpy-quaternion = "^2022.4.3"
+matplotlib = "^3.7.2"
+anytree = "^2.9.0"
 
-dynamic = ["version"]
+[tool.poetry.group.dev.dependencies]
+pip-licenses = "^4.3.2"
+pytest-cov = "^4.1.0"
 
-# [project.optional-dependencies]
-# plot = ["matplotlib"]
-
-[tool.setuptools.packages.find]
-exclude = ["build", "tests"]
-where = ["src"]
-[tool.setuptools.dynamic]
-version = {attr = "pytransform._version.__version__"}
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core"]

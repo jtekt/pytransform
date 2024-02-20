@@ -30,10 +30,13 @@ test:
 
 license:
   stage: license
+  before_script:
+    - pip install -U pip
+    - pip install -U poetry
+    - poetry install --with dev
   script:
-    - pip install pip-licenses
-    - pip-licenses --order=license
+    - poetry run pip-licenses --order=license
     # - pip-licenses --allow-only="MIT License;BSD License;Python Software Foundation License;Apache Software License;ISC License (ISCL);"
-    - pip-licenses --summary
+    - poetry run pip-licenses --summary
   tags:
     - dind

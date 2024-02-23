@@ -4,18 +4,15 @@ Python Package to control [transform](https://en.wikipedia.org/wiki/Transformati
 The transform are widely used in Game Engines and Robot Simulators.
 However, these transforms depend on their platform strongly.
 This project aims to develop the independent transform module.
-
 `Transform` class in this project has Unity like methods.
 
-## Famous Modules
+This image is an example of IK solving for human arms.
 
-- [Unity Transform](https://docs.unity3d.com/ja/2019.4/ScriptReference/Transform.html)
-- [ROS tf2](http://wiki.ros.org/tf2)
-- [OpenSim](https://simtk.org/projects/opensim/)
+![](./assets/ik_results-dual_arms.png)
 
+## Examples
+`examples` directory has some example scripts. 
+- ik.py: solve ik of a 3-DOF robot manipulator
+- ik_dual_arms.py: solve ik of dual arms on a human body
+- read_urdf.py: read an urdf file and print its structure
 
-## Similar Modules
-
-- [Scipy.spatial.transform](https://github.com/scipy/scipy/tree/master/scipy/spatial/transform): only rotation
-- [Transform3d](https://github.com/matthew-brett/transforms3d): few example
-- [PyTransform3d]() : complex api

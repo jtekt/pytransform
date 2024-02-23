@@ -1,6 +1,4 @@
-from __future__ import annotations
-
-from typing import List, TypeVar
+from typing import TypeVar
 
 import numpy as np
 import quaternion
@@ -15,7 +13,7 @@ Self = TypeVar("Self", bound="Transform")
 class Transform():
     name: str
     __parent: Self = None  # Transform
-    __children: List[Self] = []
+    __children: list[Self] = []
 
     __position: np.ndarray
     __rotation: quaternion.quaternion
